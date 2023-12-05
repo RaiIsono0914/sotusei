@@ -112,7 +112,16 @@ public class MyLine2 {
 			}
 		}
 
+
+
 	}
+
+	public void soutai(String teacherId,String name, String reason) {
+		pushMessage(teacherId,name+"さんが早退申請を送信しました。");
+		pushMessage(teacherId,reason);
+	}
+
+
 
 	@Scheduled(cron = "0 36 9 * * ?")
 	public void class1tikoku() {
@@ -205,16 +214,6 @@ public class MyLine2 {
 				}
 			}
 		}
-	}
-
-	public void soutai(String gakuseiId, String reason) {
-		System.out.println(gakuseiId);
-		List<Map<String, Object>> resultList;
-		resultList = jdbcTemplate.queryForList("SELECT user_grade user_classroom FROM user WHERE user_id=?", gakuseiId);
-		Map<String, Object> userMap = resultList.get(0);
-		String classroom = (String) userMap.get("user_classroom");
-		String grade = (String) userMap.get("user_grade");
-		System.out.println(classroom + grade);
 	}
 
 	/*******************************************************************:

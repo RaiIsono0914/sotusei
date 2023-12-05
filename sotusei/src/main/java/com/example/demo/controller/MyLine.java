@@ -306,8 +306,23 @@ public class MyLine {
 				userStateService.setUserState(userId, "wait_reason");
 			} else if ("wait_reason".equals(userStateService.getUserState(userId))) {
 
+				List<Map<String, Object>> resultList;
+				resultList = jdbcTemplate.queryForList("SELECT user_grade,user_classroom,user_name FROM user WHERE user_id=?",userId);
+				Map<String, Object> userMap = resultList.get(0);
+				String classroom = (String) userMap.get("user_classroom");
+				String grade = (String) userMap.get("user_grade");
+				String name = (String) userMap.get("user_name");
+
+				//確認
+				System.out.println(classroom +","+ grade);
+
+				resultList = jdbcTemplate.queryForList("SELECT user_id FROM teacher WHERE user_classroom=? and user_grade=?",classroom,grade);
+				Map<String, Object> teacherIdMap = resultList.get(0);
+				String teacherId = (String) teacherIdMap.get("user_id");
+				System.out.println(teacherId);
+
 				MyLine2 myline2  =new MyLine2();
-				myline2.soutai(userId,replyText);
+				myline2.soutai(teacherId,name,replyText);
 
 				String replyMessageText = "早退申請が送信されました";
 				replyMessage(replyToken, replyMessageText);

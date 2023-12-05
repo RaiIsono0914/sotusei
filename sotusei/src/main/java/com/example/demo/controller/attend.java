@@ -76,7 +76,7 @@ public class attend {
 	}
 	///欠席ゾーン
 
-	///1限のアラーム////
+//	///1限のアラーム////
 	@Scheduled(cron = "0 15 10 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void absenceFirstMessage() {
 		LocalTime currentTime = LocalTime.now();//時間を取得するためのやつ
