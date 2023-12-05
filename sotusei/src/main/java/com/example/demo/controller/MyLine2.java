@@ -106,23 +106,23 @@ public class MyLine2 {
 					}
 				}
 				pushMessage(userId, userName + "さんが遅刻しています。");
-
+				////////////////////////////////////////////////////////////////////////////////////
+			} else if ("soutai".equals(userStateService.getUserState(userId))) {
+				String replyMessageText = "承認しますか？\n承認する場合は「はい」\n承認しない場合は「いいえ」\nを送信してください";
+				replyMessage(replyToken, replyMessageText);
+				////////////////////////////////////////////////////////////////////////////////////
 			} else {
 				replyMessage(replyToken, "メニューから選択してください");
 			}
 		}
 
-
-
 	}
 
-	public void soutai(String teacherId,String name, String reason) {
-		pushMessage(teacherId,name+"さんが早退申請を送信しました。");
-		pushMessage(teacherId,reason);
+	public void soutai(String teacherId, String name, String reason) {
+		pushMessage(teacherId, name + "さんが早退申請を送信しました。\n 以下理由です。\n-------------------------------\n" + reason+"\n-------------------------------\n承認しますか？\n承認する場合は「はい」\n承認しない場合は「いいえ」\nを送信してください");
 	}
 
-
-
+	///////////////以下遅刻通知////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@Scheduled(cron = "0 36 9 * * ?")
 	public void class1tikoku() {
 
