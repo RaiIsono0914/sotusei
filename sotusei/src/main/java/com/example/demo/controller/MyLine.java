@@ -28,7 +28,7 @@ public class MyLine {
 	JdbcTemplate jdbcTemplate;
 
 	// ここにチャンネルアクセストークンを貼る！
-	String channelAccessToken = "jUd6MSszsMc5cmT/6+NPLcvszaAN8pNmCWPeIczNKp8/C7E3dupSEOJHZBuz5B5JL63FeLs84FsS6fG1pUH/p1mZodRPfEW/R1GttBypyajXkLnH9LCfpOu+eiW1ax+WsEI6ySXYgkXf85kePc5XUAdB04t89/1O/w1cDnyilFU=";
+	String channelAccessToken = "n+6eDF3xXCF90HIC94zGdKaMr7pkID8kyFQpvDf1WdUmNiGNKevUwNRWZuaUy+2MKGAj/72y1S/gZSRLYLmeufnTIVLnNymgj+7fmTEJp2uVZzUErN1gWgs1OPInPZ7P/C4F1ppC1Im8QYrWCuIT6gdB04t89/1O/w1cDnyilFU=";
 	private Map<String, String> userDeadlines = new HashMap<>();
 
 	@Autowired
@@ -98,13 +98,8 @@ public class MyLine {
 
 				//登録情報入力DB
 				jdbcTemplate.update(
-						"INSERT INTO user ( user_id ,user_number ,user_name ,user_grade,user_classroom ) VALUES (?,?,?,?,?);",
-						userId, number, name, grade, classroom);
-
-				//出席状況初期設定
-				jdbcTemplate.update(
-						"INSERT INTO attend ( user_id ,class1 ,class2 ,class3 ) VALUES (?,?,?,?);",
-						userId, 0, 0, 0);
+						"INSERT INTO user ( user_id ,user_number ,user_name ,user_grade,user_classroom,class1 ,class2 ,class3 ) VALUES (?,?,?,?,?,?,?,?);",
+						userId, number, name, grade, classroom,0,0,0);
 				System.out.println("登録完了");
 				////////////////////////出席////////////////////////////////////////////////
 			} else if ("出席".equals(replyText)) {
@@ -154,20 +149,20 @@ public class MyLine {
 
 					if (dbpass.equals(password)) {
 						System.out.println("比較OK");
-						resultList = jdbcTemplate.queryForList("select class1 FROM attend where user_id = ?", userId);
+						resultList = jdbcTemplate.queryForList("select class1 FROM user where user_id = ?", userId);
 						Map<String, Object> firstRow2 = resultList.get(0);
 						attendObject = firstRow2.get("class1");
 						attend = attendObject.toString();
 
 						if (attend.equals("0")) {
-							jdbcTemplate.update("UPDATE attend SET class1 = ? WHERE user_id = ?;", 1, userId);
+							jdbcTemplate.update("UPDATE user SET class1 = ? WHERE user_id = ?;", 1, userId);
 
 							System.out.println("passok");
 							String replyMessageText = "出席出来ました。";
 							replyMessage(replyToken, replyMessageText);
 							userStateService.removeUserState(userId);
 						} else if (attend.equals("4")) {
-							jdbcTemplate.update("UPDATE attend SET class1 = ? WHERE user_id = ?;", 2, userId);
+							jdbcTemplate.update("UPDATE user SET class1 = ? WHERE user_id = ?;", 2, userId);
 
 							System.out.println("passok");
 							String replyMessageText = "遅刻です。急ぎましょう。";
@@ -200,20 +195,20 @@ public class MyLine {
 
 					if (dbpass.equals(password)) {
 
-						resultList = jdbcTemplate.queryForList("select class2 FROM attend where user_id = ?", userId);
+						resultList = jdbcTemplate.queryForList("select class2 FROM user where user_id = ?", userId);
 						Map<String, Object> firstRow2 = resultList.get(0);
 						attendObject = firstRow2.get("class2");
 						attend = attendObject.toString();
 
 						if (attend.equals("0")) {
-							jdbcTemplate.update("UPDATE attend SET class2 = ? WHERE user_id = ?;", 1, userId);
+							jdbcTemplate.update("UPDATE user SET class2 = ? WHERE user_id = ?;", 1, userId);
 
 							System.out.println("passok");
 							String replyMessageText = "出席出来ました。";
 							replyMessage(replyToken, replyMessageText);
 							userStateService.removeUserState(userId);
 						} else if (attend.equals("4")) {
-							jdbcTemplate.update("UPDATE attend SET class2 = ? WHERE user_id = ?;", 2, userId);
+							jdbcTemplate.update("UPDATE user SET class2 = ? WHERE user_id = ?;", 2, userId);
 
 							System.out.println("passok");
 							String replyMessageText = "遅刻です。急ぎましょう。";
@@ -255,7 +250,7 @@ public class MyLine {
 					System.out.println(attend);//確認
 
 					if (dbpass.equals(password)) {//パスワード正解
-						resultList = jdbcTemplate.queryForList("select class3 FROM attend where user_id = ?", userId);
+						resultList = jdbcTemplate.queryForList("select class3 FROM user where user_id = ?", userId);
 						Map<String, Object> firstRow2 = resultList.get(0);
 						attendObject = firstRow2.get("class3");
 						attend = attendObject.toString();
@@ -264,14 +259,14 @@ public class MyLine {
 
 							//出席をDBに送信
 							System.out.println(userId);
-							jdbcTemplate.update("UPDATE attend SET class3 = ? WHERE user_id = ?;", 1, userId);
+							jdbcTemplate.update("UPDATE user SET class3 = ? WHERE user_id = ?;", 1, userId);
 
 							System.out.println("passok");
 							String replyMessageText = "出席出来ました。";
 							replyMessage(replyToken, replyMessageText);
 							userStateService.removeUserState(userId);//ユーザーの状況リセット
 						} else if (attend.equals("4")) {
-							jdbcTemplate.update("UPDATE attend SET class3 = ? WHERE user_id = ?;", 2, userId);
+							jdbcTemplate.update("UPDATE user SET class3 = ? WHERE user_id = ?;", 2, userId);
 
 							System.out.println("passok");
 							String replyMessageText = "遅刻です。急ぎましょう。";
@@ -321,8 +316,14 @@ public class MyLine {
 				String teacherId = (String) teacherIdMap.get("user_id");
 				System.out.println(teacherId);
 
+
+				jdbcTemplate.update(
+						"INSERT INTO soutai ( teacher_id ,user_name ,reason) VALUES (?,?,?);",
+						teacherId, name, replyText);
+
+
 				MyLine2 myline2  =new MyLine2();
-				myline2.soutai(teacherId,name,replyText);
+				myline2.soutai(teacherId,name);
 
 				String replyMessageText = "早退申請が送信されました";
 				replyMessage(replyToken, replyMessageText);

@@ -25,12 +25,12 @@ public class attend {
 		Object attendObject = null;
 		String attend = null;
 		//DBから出席情報を取得
-		resultList = jdbcTemplate.queryForList("select class1 FROM attend");//attendテーブルのclass1（一限の出席情報）取得
+		resultList = jdbcTemplate.queryForList("select class1 FROM user");//attendテーブルのclass1（一限の出席情報）取得
 		Map<String, Object> firstRow = resultList.get(0);//以下３行は取得したリストを文字列にする
 		attendObject = firstRow.get("class1");
 		attend = attendObject.toString();
 		if (attend.equals("0")) {//出席状況が未入力なら
-			jdbcTemplate.update("UPDATE attend SET class1 = ?;", 4);//出席状況を遅刻にする
+			jdbcTemplate.update("UPDATE user SET class1 = ?;", 4);//出席状況を遅刻にする
 			System.out.println("一限目の出席情報を遅刻予定にしました");
 		}
 	}
@@ -45,12 +45,12 @@ public class attend {
 		List<Map<String, Object>> resultList;
 		Object attendObject = null;
 		String attend = null;
-		resultList = jdbcTemplate.queryForList("select class2 FROM attend");//attendテーブルのclass1（一限の出席情報）取得
+		resultList = jdbcTemplate.queryForList("select class2 FROM user");//attendテーブルのclass1（一限の出席情報）取得
 		Map<String, Object> firstRow = resultList.get(0);//以下３行は取得したリストを文字列にする
 		attendObject = firstRow.get("class2");
 		attend = attendObject.toString();
 		if (attend.equals("0")) {
-			jdbcTemplate.update("UPDATE attend SET class2 = ?;", 4);//出席状況を遅刻にする
+			jdbcTemplate.update("UPDATE user SET class2 = ?;", 4);//出席状況を遅刻にする
 			System.out.println("二限目の出席情報を遅刻予定にしました");
 		}
 	}
@@ -65,12 +65,12 @@ public class attend {
 		List<Map<String, Object>> resultList;
 		Object attendObject = null;
 		String attend = null;
-		resultList = jdbcTemplate.queryForList("select class3 FROM attend");
+		resultList = jdbcTemplate.queryForList("select class3 FROM user");
 		Map<String, Object> firstRow = resultList.get(0);
 		attendObject = firstRow.get("class3");
 		attend = attendObject.toString();
 		if (attend.equals("0")) {
-			jdbcTemplate.update("UPDATE attend SET class3 = ?;", 4);
+			jdbcTemplate.update("UPDATE user SET class3 = ?;", 4);
 			System.out.println("三限目の出席情報を遅刻予定にしました");
 		}
 	}
@@ -87,12 +87,12 @@ public class attend {
 		Object attendObject = null;
 		String attend = null;
 		//DBから出席情報を取得
-		resultList = jdbcTemplate.queryForList("select class1 FROM attend");//attendテーブルのclass1（一限の出席情報）取得
+		resultList = jdbcTemplate.queryForList("select class1 FROM user");//attendテーブルのclass1（一限の出席情報）取得
 		Map<String, Object> firstRow = resultList.get(0);//以下３行は取得したリストを文字列にする
 		attendObject = firstRow.get("class1");
 		attend = attendObject.toString();
 		if (attend.equals("4")) {//出席状況が未入力なら
-			jdbcTemplate.update("UPDATE attend SET class1 = ?;", 3);//出席状況を遅刻にする
+			jdbcTemplate.update("UPDATE user SET class1 = ?;", 3);//出席状況を遅刻にする
 			System.out.println("一限目の出席情報を欠席にしました");
 		}
 	}
@@ -107,12 +107,12 @@ public class attend {
 		List<Map<String, Object>> resultList;
 		Object attendObject = null;
 		String attend = null;
-		resultList = jdbcTemplate.queryForList("select class2 FROM attend");//attendテーブルのclass1（一限の出席情報）取得
+		resultList = jdbcTemplate.queryForList("select class2 FROM user");//attendテーブルのclass1（一限の出席情報）取得
 		Map<String, Object> firstRow = resultList.get(0);//以下３行は取得したリストを文字列にする
 		attendObject = firstRow.get("class2");
 		attend = attendObject.toString();
 		if (attend.equals("4")) {
-			jdbcTemplate.update("UPDATE attend SET class2 = ?;", 3);//出席状況を遅刻にする
+			jdbcTemplate.update("UPDATE user SET class2 = ?;", 3);//出席状況を遅刻にする
 			System.out.println("二限目の出席情報を欠席にしました");
 		}
 	}
@@ -127,12 +127,12 @@ public class attend {
 		List<Map<String, Object>> resultList;
 		Object attendObject = null;
 		String attend = null;
-		resultList = jdbcTemplate.queryForList("select class3 FROM attend");
+		resultList = jdbcTemplate.queryForList("select class3 FROM user");
 		Map<String, Object> firstRow = resultList.get(0);
 		attendObject = firstRow.get("class3");
 		attend = attendObject.toString();
 		if (attend.equals("4")) {
-			jdbcTemplate.update("UPDATE attend SET class3 = ?;", 3);
+			jdbcTemplate.update("UPDATE user SET class3 = ?;", 3);
 			System.out.println("三限目の出席情報を欠席にしました");
 		}
 	}
@@ -141,7 +141,7 @@ public class attend {
 	//データ保存
 	@Scheduled(cron = "0 0 17 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void sevedata(){
-		List<Map<String, Object>> resultList = jdbcTemplate.queryForList("select * FROM attend");
+		List<Map<String, Object>> resultList = jdbcTemplate.queryForList("select * FROM user");
 
 		for (Map<String, Object> result : resultList) {
 
@@ -160,7 +160,7 @@ public class attend {
 
 	@Scheduled(cron = "0 0 17 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void dele(){
-		jdbcTemplate.update("UPDATE attend SET class1 = 0, class2 = 0, class3 = 0;");
+		jdbcTemplate.update("UPDATE user SET class1 = 0, class2 = 0, class3 = 0;");
 		System.out.println("今日の出席情報を初期化しました");
 		}
 	}

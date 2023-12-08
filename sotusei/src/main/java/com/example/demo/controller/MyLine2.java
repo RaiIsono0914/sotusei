@@ -28,7 +28,7 @@ public class MyLine2 {
 	JdbcTemplate jdbcTemplate;
 
 	// ここにチャンネルアクセストークンを貼る！
-	String channelAccessToken = "xSx1CZGmHE/bn4aPagnd1iJq3+M+D0uRdF7wVKOR1BKz0FdB6M3Ob8ulxy8xz069p8qKHdYbEuKnLrC/Lf4ec5I9fD+bFS/ioRKbzmsVhs/rjYDMCpeXHTi4Cr00XVH46g4rXcnIkXJAQHFKKhjS8gdB04t89/1O/w1cDnyilFU=";
+	String channelAccessToken = "lZxjfkwT/mI+IyjB2s/UZ9reKMXtUev0215AmuMEG+rZy4MlD7882bRjx+S1S3We4+80FRJP6pCDlK/P+bhWbqvcXDgobQjy7ZADbrCej0pTjALbrXPUZyPsTW36nJ6Iv3x85k6iu2ETm2Vk5uBqoQdB04t89/1O/w1cDnyilFU=";
 	private Map<String, String> userDeadlines = new HashMap<>();
 
 	@Autowired
@@ -91,23 +91,22 @@ public class MyLine2 {
 				String userName = "";
 				// クエリを使用してデータベースから結果を取得
 				resultList = jdbcTemplate
-						.queryForList("SELECT user_id FROM attend WHERE class1=4 or class2=4 or class3=4");
+						.queryForList("SELECT user_name FROM user WHERE class1=4 or class2=4 or class3=4");
 
 				// resultListの要素を取り出して処理
 				for (Map<String, Object> resultMap : resultList) {
-					String tikoku = (String) resultMap.get("user_id");
 
-					// ユーザーIDに対応するユーザー名を取得
-					nameList = jdbcTemplate.queryForList("SELECT user_name FROM user WHERE user_id=?", tikoku);
+					userName = userName + ((String) resultMap.get("user_name") + "さん、");
 
-					// nameListの要素を取り出して処理
-					for (Map<String, Object> nameMap : nameList) {
-						userName = userName + ((String) nameMap.get("user_name") + "さん、");
-					}
 				}
-				pushMessage(userId, userName + "さんが遅刻しています。");
+				pushMessage(userId, userName + "が遅刻しています。");
 				////////////////////////////////////////////////////////////////////////////////////
-			} else if ("soutai".equals(userStateService.getUserState(userId))) {
+			} else if ("早退確認".equals(replyText)) {
+
+				//DBからもらう
+
+				//信する
+
 				String replyMessageText = "承認しますか？\n承認する場合は「はい」\n承認しない場合は「いいえ」\nを送信してください";
 				replyMessage(replyToken, replyMessageText);
 				////////////////////////////////////////////////////////////////////////////////////
@@ -118,8 +117,8 @@ public class MyLine2 {
 
 	}
 
-	public void soutai(String teacherId, String name, String reason) {
-		pushMessage(teacherId, name + "さんが早退申請を送信しました。\n 以下理由です。\n-------------------------------\n" + reason+"\n-------------------------------\n承認しますか？\n承認する場合は「はい」\n承認しない場合は「いいえ」\nを送信してください");
+	public void soutai(String teacherId, String name) {
+		pushMessage(teacherId, name + "さんが早退申請を送信しました。\nメニューから「早退確認」を選択してください。");
 	}
 
 	///////////////以下遅刻通知////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,61 +126,46 @@ public class MyLine2 {
 	public void class1tikoku() {
 
 		List<Map<String, Object>> resultList;
-		List<Map<String, Object>> nameList;
 		List<Map<String, Object>> teacherList;
 
-		resultList = jdbcTemplate.queryForList("SELECT user_id FROM attend WHERE class1=4");
+		resultList = jdbcTemplate.queryForList("SELECT user_name FROM user WHERE class1=4");
 		teacherList = jdbcTemplate.queryForList("SELECT user_id FROM teacher");
 
-		for (Map<String, Object> resultMap : resultList) {
-			String tikoku = (String) resultMap.get("user_id");
-
-			// ユーザーIDに対応するユーザー名を取得
-			nameList = jdbcTemplate.queryForList("SELECT user_name FROM user WHERE user_id=?", tikoku);
-
-			for (Map<String, Object> teacherMap : teacherList) {
-				// nameListの要素を取り出して処理
-				String teacher = (String) teacherMap.get("user_id");
-
-				for (Map<String, Object> nameMap : nameList) {
-					String userName = (String) nameMap.get("user_name");
-
-					// 遅刻している場合にメッセージを送信
-					pushMessage(teacher, userName + "さんが遅刻しています。");
-				}
+		String teacher ="";
+		String userName="";
+		for (Map<String, Object> teacherMap : teacherList) {
+			// nameListの要素を取り出して処理
+			teacher = (String) teacherMap.get("user_id");
+			System.out.println(teacher);
+			for (Map<String, Object> resultMap : resultList) {
+				userName = userName+(String) resultMap.get("user_name")+"さん、";
+				System.out.println(userName);
 			}
+			pushMessage(teacher, userName + "が遅刻しています。");
 		}
-
 		System.out.println("一限の遅刻者を教員に通知しました");
 	}
 
-	@Scheduled(cron = "0 21 11 * * ?")
+	@Scheduled(cron = "30 39 11 * * ?")
 	public void class2tikoku() {
 
 		List<Map<String, Object>> resultList;
-		List<Map<String, Object>> nameList;
 		List<Map<String, Object>> teacherList;
 
-		resultList = jdbcTemplate.queryForList("SELECT user_id FROM attend WHERE class2=4");
+		resultList = jdbcTemplate.queryForList("SELECT user_name FROM user WHERE class2=4");
 		teacherList = jdbcTemplate.queryForList("SELECT user_id FROM teacher");
 
-		for (Map<String, Object> resultMap : resultList) {
-			String tikoku = (String) resultMap.get("user_id");
-
-			// ユーザーIDに対応するユーザー名を取得
-			nameList = jdbcTemplate.queryForList("SELECT user_name FROM user WHERE user_id=?", tikoku);
-
-			for (Map<String, Object> teacherMap : teacherList) {
-				// nameListの要素を取り出して処理
-				String teacher = (String) teacherMap.get("user_id");
-
-				for (Map<String, Object> nameMap : nameList) {
-					String userName = (String) nameMap.get("user_name");
-
-					// 遅刻している場合にメッセージを送信
-					pushMessage(teacher, userName + "さんが遅刻しています。");
-				}
+		String teacher ="";
+		String userName="";
+		for (Map<String, Object> teacherMap : teacherList) {
+			// nameListの要素を取り出して処理
+			teacher = (String) teacherMap.get("user_id");
+			System.out.println(teacher);
+			for (Map<String, Object> resultMap : resultList) {
+				userName = userName+(String) resultMap.get("user_name")+"さん、";
+				System.out.println(userName);
 			}
+			pushMessage(teacher, userName + "が遅刻しています。");
 		}
 		System.out.println("二限の遅刻者を教員に通知しました");
 	}
@@ -190,30 +174,24 @@ public class MyLine2 {
 	public void class3tikoku() {
 
 		List<Map<String, Object>> resultList;
-		List<Map<String, Object>> nameList;
 		List<Map<String, Object>> teacherList;
 
-		resultList = jdbcTemplate.queryForList("SELECT user_id FROM attend WHERE class3=4");
+		resultList = jdbcTemplate.queryForList("SELECT user_name FROM user WHERE class3=4");
 		teacherList = jdbcTemplate.queryForList("SELECT user_id FROM teacher");
 
-		for (Map<String, Object> resultMap : resultList) {
-			String tikoku = (String) resultMap.get("user_id");
-
-			// ユーザーIDに対応するユーザー名を取得
-			nameList = jdbcTemplate.queryForList("SELECT user_name FROM user WHERE user_id=?", tikoku);
-
-			for (Map<String, Object> teacherMap : teacherList) {
-				// nameListの要素を取り出して処理
-				String teacher = (String) teacherMap.get("user_id");
-
-				for (Map<String, Object> nameMap : nameList) {
-					String userName = (String) nameMap.get("user_name");
-
-					// 遅刻している場合にメッセージを送信
-					pushMessage(teacher, userName + "さんが遅刻しています。");
-				}
+		String teacher ="";
+		String userName="";
+		for (Map<String, Object> teacherMap : teacherList) {
+			// nameListの要素を取り出して処理
+			teacher = (String) teacherMap.get("user_id");
+			System.out.println(teacher);
+			for (Map<String, Object> resultMap : resultList) {
+				userName = userName+(String) resultMap.get("user_name")+"さん、";
+				System.out.println(userName);
 			}
+			pushMessage(teacher, userName + "が遅刻しています。");
 		}
+		System.out.println("三限の遅刻者を教員に通知しました");
 	}
 
 	/*******************************************************************:
