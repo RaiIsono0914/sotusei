@@ -84,7 +84,7 @@ public class MyLine2 {
 						"INSERT INTO teacher ( user_id ,user_name ,user_grade,user_classroom ) VALUES (?,?,?,?);",
 						userId, name, grade, classroom);
 
-			} else if ("確認".equals(replyText)) {
+			} else if ("遅刻確認".equals(replyText)) {
 
 				List<Map<String, Object>> resultList;
 				List<Map<String, Object>> nameList;
@@ -99,17 +99,101 @@ public class MyLine2 {
 					userName = userName + ((String) resultMap.get("user_name") + "さん、");
 
 				}
-				pushMessage(userId, userName + "が遅刻しています。");
+
+				if (userName != "") {
+					pushMessage(userId, userName + "が遅刻しています。");
+				} else {
+					pushMessage(userId, "遅刻者はいません。");
+				}
+
 				////////////////////////////////////////////////////////////////////////////////////
 			} else if ("早退確認".equals(replyText)) {
 
+				String message = "早退申請リスト\n\n";
 				//DBからもらう
+				List<Map<String, Object>> resultList;
+				resultList = jdbcTemplate
+						.queryForList("SELECT student_name,reason,id FROM soutai WHERE teacher_id=? AND judge=0", userId);
 
-				//信する
+				for (Map<String, Object> resultMap : resultList) {
+					String name = (String) resultMap.get("student_name");
+					String reason = (String) resultMap.get("reason");
+					Object id = resultMap.get("id");
 
-				String replyMessageText = "承認しますか？\n承認する場合は「はい」\n承認しない場合は「いいえ」\nを送信してください";
+					message = message + (name + "さん\n申請ID:" + id + "\n-------早退理由-------\n" + reason
+							+ "\n-------早退理由-------\n" + "\n");
+
+				}
+
+				message += "申請IDを送信して許可、不許可を決定してください";
+
+				String replyMessageText = message;
 				replyMessage(replyToken, replyMessageText);
-				////////////////////////////////////////////////////////////////////////////////////
+
+				userStateService.setUserState(userId, "soutai_kakunin");
+
+			} else if ("soutai_kakunin".equals(userStateService.getUserState(userId))) {
+				String id = replyText;
+				String message = "早退申請審査\n\n";
+				userStateService.setUserSoutaiid(userId, replyText);
+				//DBからもらう
+				List<Map<String, Object>> resultList;
+				resultList = jdbcTemplate
+						.queryForList("SELECT student_name,reason,id FROM soutai WHERE id=?", id);
+
+				if (resultList.isEmpty()) {
+					String replyMessageText = "適切なIDではありません。";
+					replyMessage(replyToken, replyMessageText);
+					userStateService.removeUserState(userId);
+				} else {
+					for (Map<String, Object> resultMap : resultList) {
+						String name = (String) resultMap.get("student_name");
+						String reason = (String) resultMap.get("reason");
+
+						message += name + "さん\n申請ID:" + id + "\n-------早退理由-------\n" + reason
+								+ "\n-------早退理由-------\n上記の申請を許可しますか？\n許可する場合は「許可」\n許可しない場合は「不許可」\nを送信してください";
+					}
+
+					String replyMessageText = message;
+					replyMessage(replyToken, replyMessageText);
+
+					userStateService.setUserState(userId, "soutai_sinsa");
+				}
+			} else if ("soutai_sinsa".equals(userStateService.getUserState(userId)) && "許可".equals(replyText)) {
+				System.out.println("申請を許可しました");
+				String replyMessageText = "許可しました。\n学生に通知します";
+				replyMessage(replyToken, replyMessageText);
+
+				String judgeid = userStateService.getUserSoutaiid(userId);
+				//通知
+
+				List<Map<String, Object>> resultList;
+				resultList = jdbcTemplate
+						.queryForList("SELECT student_name,reason,id,student_id FROM soutai WHERE id=?", judgeid);
+				String message = "以下の申請が許可されました\n\n";
+				String name = "";
+				String id = "";
+				for (Map<String, Object> resultMap : resultList) {
+					name = (String) resultMap.get("student_name");
+					String reason = (String) resultMap.get("reason");
+					id = (String) resultMap.get("student_id");
+
+					message += name + "さん\n申請ID:" + judgeid + "\n-------早退理由-------\n" + reason
+							+ "\n-------早退理由-------";
+				}
+
+				MyLine myline = new MyLine();
+				myline.soutai_judge(message, id);
+
+				jdbcTemplate.update(
+						"UPDATE soutai SET judge = 1 where id=?;",judgeid);
+
+			} else if ("soutai_sinsa".equals(userStateService.getUserState(userId)) && "不許可".equals(replyText)) {
+				System.out.println("申請を不許可しました");
+				String replyMessageText = "許可しませんでした。\n学生に通知します";
+				replyMessage(replyToken, replyMessageText);
+				userStateService.removeUserState(userId);
+				//				////////////////////////////////////////////////////////////////////////////////////
 			} else {
 				replyMessage(replyToken, "メニューから選択してください");
 			}
@@ -122,7 +206,7 @@ public class MyLine2 {
 	}
 
 	///////////////以下遅刻通知////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	@Scheduled(cron = "0 36 9 * * ?")
+	@Scheduled(cron = "0 36 9 * * MON-FRI")
 	public void class1tikoku() {
 
 		List<Map<String, Object>> resultList;
@@ -131,22 +215,27 @@ public class MyLine2 {
 		resultList = jdbcTemplate.queryForList("SELECT user_name FROM user WHERE class1=4");
 		teacherList = jdbcTemplate.queryForList("SELECT user_id FROM teacher");
 
-		String teacher ="";
-		String userName="";
+		String teacher = "";
+		String userName = "";
 		for (Map<String, Object> teacherMap : teacherList) {
 			// nameListの要素を取り出して処理
 			teacher = (String) teacherMap.get("user_id");
 			System.out.println(teacher);
 			for (Map<String, Object> resultMap : resultList) {
-				userName = userName+(String) resultMap.get("user_name")+"さん、";
+				userName = userName + (String) resultMap.get("user_name") + "さん、";
 				System.out.println(userName);
 			}
-			pushMessage(teacher, userName + "が遅刻しています。");
+
+			if (userName != "") {
+				pushMessage(teacher, userName + "が遅刻しています。");
+			} else {
+				pushMessage(teacher, "遅刻者はいません。");
+			}
 		}
 		System.out.println("一限の遅刻者を教員に通知しました");
 	}
 
-	@Scheduled(cron = "30 39 11 * * ?")
+	@Scheduled(cron = "30 39 11 * * MON-FRI")
 	public void class2tikoku() {
 
 		List<Map<String, Object>> resultList;
@@ -155,22 +244,26 @@ public class MyLine2 {
 		resultList = jdbcTemplate.queryForList("SELECT user_name FROM user WHERE class2=4");
 		teacherList = jdbcTemplate.queryForList("SELECT user_id FROM teacher");
 
-		String teacher ="";
-		String userName="";
+		String teacher = "";
+		String userName = "";
 		for (Map<String, Object> teacherMap : teacherList) {
 			// nameListの要素を取り出して処理
 			teacher = (String) teacherMap.get("user_id");
 			System.out.println(teacher);
 			for (Map<String, Object> resultMap : resultList) {
-				userName = userName+(String) resultMap.get("user_name")+"さん、";
+				userName = userName + (String) resultMap.get("user_name") + "さん、";
 				System.out.println(userName);
 			}
-			pushMessage(teacher, userName + "が遅刻しています。");
+			if (userName != "") {
+				pushMessage(teacher, userName + "が遅刻しています。");
+			} else {
+				pushMessage(teacher, "遅刻者はいません。");
+			}
 		}
 		System.out.println("二限の遅刻者を教員に通知しました");
 	}
 
-	@Scheduled(cron = "0 51 13 * * ?")
+	@Scheduled(cron = "0 51 13 * * MON-FRI")
 	public void class3tikoku() {
 
 		List<Map<String, Object>> resultList;
@@ -179,17 +272,21 @@ public class MyLine2 {
 		resultList = jdbcTemplate.queryForList("SELECT user_name FROM user WHERE class3=4");
 		teacherList = jdbcTemplate.queryForList("SELECT user_id FROM teacher");
 
-		String teacher ="";
-		String userName="";
+		String teacher = "";
+		String userName = "";
 		for (Map<String, Object> teacherMap : teacherList) {
 			// nameListの要素を取り出して処理
 			teacher = (String) teacherMap.get("user_id");
 			System.out.println(teacher);
 			for (Map<String, Object> resultMap : resultList) {
-				userName = userName+(String) resultMap.get("user_name")+"さん、";
+				userName = userName + (String) resultMap.get("user_name") + "さん、";
 				System.out.println(userName);
 			}
-			pushMessage(teacher, userName + "が遅刻しています。");
+			if (userName != "") {
+				pushMessage(teacher, userName + "が遅刻しています。");
+			} else {
+				pushMessage(teacher, "遅刻者はいません。");
+			}
 		}
 		System.out.println("三限の遅刻者を教員に通知しました");
 	}

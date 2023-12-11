@@ -50,13 +50,14 @@ public class MyLine {
 
 			///////////////////登録/////////////////
 			if ("登録".equals(replyText)) {
-				List<Map<String, Object>> resultList = jdbcTemplate.queryForList("SELECT user_id FROM user WHERE user_id = ?", userId);
+				List<Map<String, Object>> resultList = jdbcTemplate
+						.queryForList("SELECT user_id FROM user WHERE user_id = ?", userId);
 
 				if (resultList.isEmpty()) {
-				String replyMessageText = "学籍番号を入力してください";
-				replyMessage(replyToken, replyMessageText);
-				userStateService.setUserState(userId, "number");//状態保存
-				}else {
+					String replyMessageText = "学籍番号を入力してください";
+					replyMessage(replyToken, replyMessageText);
+					userStateService.setUserState(userId, "number");//状態保存
+				} else {
 					String replyMessageText = "既に登録されています。";
 					replyMessage(replyToken, replyMessageText);
 					userStateService.removeUserState(userId);
@@ -99,7 +100,7 @@ public class MyLine {
 				//登録情報入力DB
 				jdbcTemplate.update(
 						"INSERT INTO user ( user_id ,user_number ,user_name ,user_grade,user_classroom,class1 ,class2 ,class3 ) VALUES (?,?,?,?,?,?,?,?);",
-						userId, number, name, grade, classroom,0,0,0);
+						userId, number, name, grade, classroom, 0, 0, 0);
 				System.out.println("登録完了");
 				////////////////////////出席////////////////////////////////////////////////
 			} else if ("出席".equals(replyText)) {
@@ -302,28 +303,28 @@ public class MyLine {
 			} else if ("wait_reason".equals(userStateService.getUserState(userId))) {
 
 				List<Map<String, Object>> resultList;
-				resultList = jdbcTemplate.queryForList("SELECT user_grade,user_classroom,user_name FROM user WHERE user_id=?",userId);
+				resultList = jdbcTemplate
+						.queryForList("SELECT user_grade,user_classroom,user_name FROM user WHERE user_id=?", userId);
 				Map<String, Object> userMap = resultList.get(0);
 				String classroom = (String) userMap.get("user_classroom");
 				String grade = (String) userMap.get("user_grade");
 				String name = (String) userMap.get("user_name");
 
 				//確認
-				System.out.println(classroom +","+ grade);
+				System.out.println(classroom + "," + grade);
 
-				resultList = jdbcTemplate.queryForList("SELECT user_id FROM teacher WHERE user_classroom=? and user_grade=?",classroom,grade);
+				resultList = jdbcTemplate.queryForList(
+						"SELECT user_id FROM teacher WHERE user_classroom=? and user_grade=?", classroom, grade);
 				Map<String, Object> teacherIdMap = resultList.get(0);
 				String teacherId = (String) teacherIdMap.get("user_id");
 				System.out.println(teacherId);
 
-
 				jdbcTemplate.update(
-						"INSERT INTO soutai ( teacher_id ,user_name ,reason) VALUES (?,?,?);",
-						teacherId, name, replyText);
+						"INSERT INTO soutai ( teacher_id ,student_name ,reason,judge,student_id) VALUES (?,?,?,0,?);",
+						teacherId, name, replyText,userId);
 
-
-				MyLine2 myline2  =new MyLine2();
-				myline2.soutai(teacherId,name);
+				MyLine2 myline2 = new MyLine2();
+				myline2.soutai(teacherId, name);
 
 				String replyMessageText = "早退申請が送信されました";
 				replyMessage(replyToken, replyMessageText);
@@ -332,15 +333,16 @@ public class MyLine {
 				////////////////////////////PC貸出/////////////////////////////////
 			} else if ("貸出".equals(replyText)) {
 
-				List<Map<String, Object>> resultList = jdbcTemplate.queryForList("SELECT user_pc FROM user WHERE user_id = ?", userId);
+				List<Map<String, Object>> resultList = jdbcTemplate
+						.queryForList("SELECT user_pc FROM user WHERE user_id = ?", userId);
 				System.out.println(resultList.size());
-				if(resultList.isEmpty() || resultList.get(0).get("user_pc") == null) {
-				jdbcTemplate.update("UPDATE user SET user_pc = ? WHERE user_id = ?;", 1, userId);
-				String replyMessageText = "PC番号を入力してください。半角英数字で入力してください。";//毎朝自動的に返却したことにする
-				replyMessage(replyToken, replyMessageText);
-				userStateService.setUserState(userId, "pcnumber");
+				if (resultList.isEmpty() || resultList.get(0).get("user_pc") == null) {
+					jdbcTemplate.update("UPDATE user SET user_pc = ? WHERE user_id = ?;", 1, userId);
+					String replyMessageText = "PC番号を入力してください。半角英数字で入力してください。";//毎朝自動的に返却したことにする
+					replyMessage(replyToken, replyMessageText);
+					userStateService.setUserState(userId, "pcnumber");
 
-				}else {
+				} else {
 					String replyMessageText = "既に貸し出しています。";//毎朝自動的に返却したことにする
 					replyMessage(replyToken, replyMessageText);
 				}
@@ -357,6 +359,11 @@ public class MyLine {
 			}
 		}
 
+	}
+
+	public void soutai_judge(String message, String id) {
+		
+		pushMessage(id, message);
 	}
 
 	/*******************************************************************:
@@ -435,6 +442,31 @@ public class MyLine {
 		// リクエストボディを設定
 		Map<String, Object> body = new HashMap<>();
 		body.put("replyToken", replyToken);
+		body.put("messages", Collections.singletonList(message));
+
+		// HTTPリクエストを送信
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.postForObject(url, new HttpEntity<>(body, headers), String.class);
+	}
+
+	// メッセージ送信メソッド
+	private void pushMessage(String to, String pushText) {
+		// LINE APIのエンドポイント
+		String url = "https://api.line.me/v2/bot/message/push";
+
+		// HTTPヘッダーにChannel Access Tokenを設定
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("Authorization", "Bearer " + channelAccessToken);
+
+		// 送信するメッセージを設定
+		Map<String, Object> message = new HashMap<>();
+		message.put("type", "text");
+		message.put("text", pushText);
+
+		// リクエストボディを設定
+		Map<String, Object> body = new HashMap<>();
+		body.put("to", to);
 		body.put("messages", Collections.singletonList(message));
 
 		// HTTPリクエストを送信

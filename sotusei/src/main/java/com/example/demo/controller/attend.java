@@ -76,7 +76,7 @@ public class attend {
 	}
 	///欠席ゾーン
 
-//	///1限のアラーム////
+	//	///1限のアラーム////
 	@Scheduled(cron = "0 15 10 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void absenceFirstMessage() {
 		LocalTime currentTime = LocalTime.now();//時間を取得するためのやつ
@@ -137,10 +137,9 @@ public class attend {
 		}
 	}
 
-
 	//データ保存
 	@Scheduled(cron = "0 0 17 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
-	public void sevedata(){
+	public void sevedata() {
 		List<Map<String, Object>> resultList = jdbcTemplate.queryForList("select * FROM user");
 
 		for (Map<String, Object> result : resultList) {
@@ -153,14 +152,20 @@ public class attend {
 
 			// attendlogテーブルにデータを挿入
 			String insertSql = "INSERT INTO attendlog (user_id,class1, class2, class3) VALUES (?, ?, ?,?)";
-			jdbcTemplate.update(insertSql, user_id,class1, class2, class3);
+			jdbcTemplate.update(insertSql, user_id, class1, class2, class3);
 			System.out.println("今日の出席情報をDBに保存しました");
 		}
 	}
 
 	@Scheduled(cron = "0 0 17 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
-	public void dele(){
+	public void dele() {
 		jdbcTemplate.update("UPDATE user SET class1 = 0, class2 = 0, class3 = 0;");
 		System.out.println("今日の出席情報を初期化しました");
-		}
 	}
+
+	@Scheduled(cron = "0 0 17 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
+	public void delesoutai() {
+		jdbcTemplate.update("DELETE from soutai;");
+		System.out.println("今日の早退申請を初期化しました");
+	}
+}

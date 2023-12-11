@@ -11,6 +11,7 @@ public class UserStateService {
 	private final ConcurrentHashMap<String, String> userGrade = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<String, String> userNumber = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<String, String> userClassroom = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, String> userSoutaiid = new ConcurrentHashMap<>();
 
 
 	public void setUserState(String userId, String state) {
@@ -55,6 +56,14 @@ public class UserStateService {
 
 	public String getUserClassroom(String userId) {
 	    return userClassroom.get(userId);
+	}
+	
+	public void setUserSoutaiid(String userId, String soutaiid) {
+	    userSoutaiid.put(userId, soutaiid);
+	}
+
+	public String getUserSoutaiid(String userId) {
+	    return userSoutaiid.get(userId);
 	}
 
 }
