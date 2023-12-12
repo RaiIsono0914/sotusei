@@ -29,7 +29,6 @@ public class MyLine {
 
 	// ここにチャンネルアクセストークンを貼る！
 	String channelAccessToken = "n+6eDF3xXCF90HIC94zGdKaMr7pkID8kyFQpvDf1WdUmNiGNKevUwNRWZuaUy+2MKGAj/72y1S/gZSRLYLmeufnTIVLnNymgj+7fmTEJp2uVZzUErN1gWgs1OPInPZ7P/C4F1ppC1Im8QYrWCuIT6gdB04t89/1O/w1cDnyilFU=";
-	private Map<String, String> userDeadlines = new HashMap<>();
 
 	@Autowired
 	private UserStateService userStateService;
@@ -46,10 +45,12 @@ public class MyLine {
 			// ユーザIDを取得する。
 			String userId = event.getSource().getUserId();
 
-			String numataImg = "https://www.itc.ac.jp/_cms/wp-content/themes/itc1.1.0/assets/img/teacher/img-teacher-numata-s-on.jpg";
-
+			if("キャンセル".equals(replyText)){
+				userStateService.removeUserState(userId);
+				String replyMessageText = "操作をキャンセルしました\nメニューから選択してください";
+				replyMessage(replyToken, replyMessageText);
 			///////////////////登録/////////////////
-			if ("登録".equals(replyText)) {
+			}else if ("登録".equals(replyText)) {
 				List<Map<String, Object>> resultList = jdbcTemplate
 						.queryForList("SELECT user_id FROM user WHERE user_id = ?", userId);
 
@@ -297,9 +298,14 @@ public class MyLine {
 				replyMessage(replyToken, replyMessageText);
 				/////////////////////////早退///////////////////////////////////////////////////
 			} else if ("早退".equals(replyText)) {
+				String replyMessageText = "早退時間を転送します。入力してください\n例:10時15分→1015";
+				replyMessage(replyToken, replyMessageText);
+				userStateService.setUserState(userId, "wait_time");
+			} else if ("wait_time".equals(userStateService.getUserState(userId))) {
 				String replyMessageText = "早退理由を転送します。入力してください";
 				replyMessage(replyToken, replyMessageText);
 				userStateService.setUserState(userId, "wait_reason");
+				userStateService.setUserSoutaiTime(userId, replyText);
 			} else if ("wait_reason".equals(userStateService.getUserState(userId))) {
 
 				List<Map<String, Object>> resultList;
@@ -319,9 +325,11 @@ public class MyLine {
 				String teacherId = (String) teacherIdMap.get("user_id");
 				System.out.println(teacherId);
 
+				String time =userStateService.getUserSoutaiTime(userId);
+				System.out.println(time);
 				jdbcTemplate.update(
-						"INSERT INTO soutai ( teacher_id ,student_name ,reason,judge,student_id) VALUES (?,?,?,0,?);",
-						teacherId, name, replyText,userId);
+						"INSERT INTO soutai ( teacher_id ,student_name ,reason,judge,student_id,time) VALUES (?,?,?,0,?,?);",
+						teacherId, name, replyText,userId,time);
 
 				MyLine2 myline2 = new MyLine2();
 				myline2.soutai(teacherId, name);
@@ -362,39 +370,13 @@ public class MyLine {
 	}
 
 	public void soutai_judge(String message, String id) {
-		
+
 		pushMessage(id, message);
 	}
 
 	/*******************************************************************:
 	 * ここから↓は今は気にしないでOK!
 	 *******************************************************************/
-	private void replyImageMessage(String replyToken, String originalContentUrl, String previewImageUrl) {
-
-		// LINE APIのエンドポイント
-		String url = "https://api.line.me/v2/bot/message/reply";
-
-		// HTTPヘッダーにChannel Access Tokenを設定
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Authorization", "Bearer " + channelAccessToken);
-
-		// 送信する画像を設定
-		Map<String, Object> message = new HashMap<>();
-		message.put("type", "image");
-		message.put("originalContentUrl", originalContentUrl);
-		message.put("previewImageUrl", previewImageUrl);
-
-		// リクエストボディを設定（画像用）
-		Map<String, Object> body = new HashMap<>();
-		body.put("replyToken", replyToken);
-		body.put("messages", Collections.singletonList(message));
-
-		// 画像を送信
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.postForObject(url, new HttpEntity<>(body, headers), String.class);
-
-	}
 
 	//文字を送りたい場合はこのメソッドを呼び出す。
 	//呼び出す際、第二引数に送りたい文字列を渡す。
@@ -418,31 +400,6 @@ public class MyLine {
 		body.put("messages", Collections.singletonList(message));
 
 		System.out.println("test");
-
-		// HTTPリクエストを送信
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.postForObject(url, new HttpEntity<>(body, headers), String.class);
-	}
-
-	private void replyMovieMessage(String replyToken, String movieUrl, String thumnailImg) {
-		// LINE APIのエンドポイント
-		String url = "https://api.line.me/v2/bot/message/reply";
-
-		// HTTPヘッダーにChannel Access Tokenを設定
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Authorization", "Bearer " + channelAccessToken);
-
-		// 送信するメッセージを設定
-		Map<String, Object> message = new HashMap<>();
-		message.put("type", "video");
-		message.put("originalContentUrl", movieUrl);
-		message.put("previewImageUrl", thumnailImg);
-
-		// リクエストボディを設定
-		Map<String, Object> body = new HashMap<>();
-		body.put("replyToken", replyToken);
-		body.put("messages", Collections.singletonList(message));
 
 		// HTTPリクエストを送信
 		RestTemplate restTemplate = new RestTemplate();

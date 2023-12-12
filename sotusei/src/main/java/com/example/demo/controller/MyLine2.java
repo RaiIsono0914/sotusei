@@ -29,7 +29,6 @@ public class MyLine2 {
 
 	// ここにチャンネルアクセストークンを貼る！
 	String channelAccessToken = "lZxjfkwT/mI+IyjB2s/UZ9reKMXtUev0215AmuMEG+rZy4MlD7882bRjx+S1S3We4+80FRJP6pCDlK/P+bhWbqvcXDgobQjy7ZADbrCej0pTjALbrXPUZyPsTW36nJ6Iv3x85k6iu2ETm2Vk5uBqoQdB04t89/1O/w1cDnyilFU=";
-	private Map<String, String> userDeadlines = new HashMap<>();
 
 	@Autowired
 	private UserStateService userStateService;
@@ -46,10 +45,12 @@ public class MyLine2 {
 			// ユーザIDを取得する。
 			String userId = event.getSource().getUserId();
 
-			String numataImg = "https://www.itc.ac.jp/_cms/wp-content/themes/itc1.1.0/assets/img/teacher/img-teacher-numata-s-on.jpg";
-
 			///////////////////登録/////////////////
-			if ("登録".equals(replyText)) {
+			if ("キャンセル".equals(replyText)) {
+				userStateService.removeUserState(userId);
+				String replyMessageText = "操作をキャンセルしました\nメニューから選択してください";
+				replyMessage(replyToken, replyMessageText);
+			} else if ("登録".equals(replyText)) {
 				String replyMessageText = "名前を入力して下さい";
 				replyMessage(replyToken, replyMessageText);
 				userStateService.setUserState(userId, "wait_name");
@@ -87,7 +88,6 @@ public class MyLine2 {
 			} else if ("遅刻確認".equals(replyText)) {
 
 				List<Map<String, Object>> resultList;
-				List<Map<String, Object>> nameList;
 				String userName = "";
 				// クエリを使用してデータベースから結果を取得
 				resultList = jdbcTemplate
@@ -113,14 +113,15 @@ public class MyLine2 {
 				//DBからもらう
 				List<Map<String, Object>> resultList;
 				resultList = jdbcTemplate
-						.queryForList("SELECT student_name,reason,id FROM soutai WHERE teacher_id=? AND judge=0", userId);
+						.queryForList("SELECT student_name,reason,id,time FROM soutai WHERE teacher_id=? AND judge=0",
+								userId);
 
 				for (Map<String, Object> resultMap : resultList) {
 					String name = (String) resultMap.get("student_name");
 					String reason = (String) resultMap.get("reason");
 					Object id = resultMap.get("id");
-
-					message = message + (name + "さん\n申請ID:" + id + "\n-------早退理由-------\n" + reason
+					String time =(String) resultMap.get("time");
+					message = message + (name + "さん\n申請ID:" + id +"\n早退時間:" + time + "\n-------早退理由-------\n" + reason
 							+ "\n-------早退理由-------\n" + "\n");
 
 				}
@@ -139,7 +140,7 @@ public class MyLine2 {
 				//DBからもらう
 				List<Map<String, Object>> resultList;
 				resultList = jdbcTemplate
-						.queryForList("SELECT student_name,reason,id FROM soutai WHERE id=?", id);
+						.queryForList("SELECT student_name,reason,id,time FROM soutai WHERE id=?", id);
 
 				if (resultList.isEmpty()) {
 					String replyMessageText = "適切なIDではありません。";
@@ -149,8 +150,9 @@ public class MyLine2 {
 					for (Map<String, Object> resultMap : resultList) {
 						String name = (String) resultMap.get("student_name");
 						String reason = (String) resultMap.get("reason");
+						String time =(String) resultMap.get("time");
 
-						message += name + "さん\n申請ID:" + id + "\n-------早退理由-------\n" + reason
+						message += name + "さん\n申請ID:" + id+"\n早退時間:" + time + "\n-------早退理由-------\n" + reason
 								+ "\n-------早退理由-------\n上記の申請を許可しますか？\n許可する場合は「許可」\n許可しない場合は「不許可」\nを送信してください";
 					}
 
@@ -169,8 +171,37 @@ public class MyLine2 {
 
 				List<Map<String, Object>> resultList;
 				resultList = jdbcTemplate
-						.queryForList("SELECT student_name,reason,id,student_id FROM soutai WHERE id=?", judgeid);
+						.queryForList("SELECT student_name,reason,id,student_id,time FROM soutai WHERE id=?", judgeid);
 				String message = "以下の申請が許可されました\n\n";
+				String name = "";
+				String id = "";
+				for (Map<String, Object> resultMap : resultList) {
+					name = (String) resultMap.get("student_name");
+					String reason = (String) resultMap.get("reason");
+					id = (String) resultMap.get("student_id");
+					String time = (String) resultMap.get("t");
+					message += name + "さん\n申請ID:" + judgeid+"\n早退時間:" + time + "\n-------早退理由-------\n" + reason
+							+ "\n-------早退理由-------";
+				}
+
+				MyLine myline = new MyLine();
+				myline.soutai_judge(message, id);
+
+				jdbcTemplate.update(
+						"UPDATE soutai SET judge = 1 where id=?;", judgeid);
+
+			} else if ("soutai_sinsa".equals(userStateService.getUserState(userId)) && "不許可".equals(replyText)) {
+				System.out.println("申請を不許可しました");
+				String replyMessageText = "不許可しました。\n学生に通知します";
+				replyMessage(replyToken, replyMessageText);
+
+				String judgeid = userStateService.getUserSoutaiid(userId);
+				//通知
+
+				List<Map<String, Object>> resultList;
+				resultList = jdbcTemplate
+						.queryForList("SELECT student_name,reason,id,student_id FROM soutai WHERE id=?", judgeid);
+				String message = "以下の申請が不許可されました\n\n";
 				String name = "";
 				String id = "";
 				for (Map<String, Object> resultMap : resultList) {
@@ -186,13 +217,8 @@ public class MyLine2 {
 				myline.soutai_judge(message, id);
 
 				jdbcTemplate.update(
-						"UPDATE soutai SET judge = 1 where id=?;",judgeid);
+						"UPDATE soutai SET judge = 2 where id=?;", judgeid);
 
-			} else if ("soutai_sinsa".equals(userStateService.getUserState(userId)) && "不許可".equals(replyText)) {
-				System.out.println("申請を不許可しました");
-				String replyMessageText = "許可しませんでした。\n学生に通知します";
-				replyMessage(replyToken, replyMessageText);
-				userStateService.removeUserState(userId);
 				//				////////////////////////////////////////////////////////////////////////////////////
 			} else {
 				replyMessage(replyToken, "メニューから選択してください");
@@ -294,32 +320,6 @@ public class MyLine2 {
 	/*******************************************************************:
 	 * ここから↓は今は気にしないでOK!
 	 *******************************************************************/
-	private void replyImageMessage(String replyToken, String originalContentUrl, String previewImageUrl) {
-
-		// LINE APIのエンドポイント
-		String url = "https://api.line.me/v2/bot/message/reply";
-
-		// HTTPヘッダーにChannel Access Tokenを設定
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Authorization", "Bearer " + channelAccessToken);
-
-		// 送信する画像を設定
-		Map<String, Object> message = new HashMap<>();
-		message.put("type", "image");
-		message.put("originalContentUrl", originalContentUrl);
-		message.put("previewImageUrl", previewImageUrl);
-
-		// リクエストボディを設定（画像用）
-		Map<String, Object> body = new HashMap<>();
-		body.put("replyToken", replyToken);
-		body.put("messages", Collections.singletonList(message));
-
-		// 画像を送信
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.postForObject(url, new HttpEntity<>(body, headers), String.class);
-
-	}
 
 	//文字を送りたい場合はこのメソッドを呼び出す。
 	//呼び出す際、第二引数に送りたい文字列を渡す。
@@ -343,31 +343,6 @@ public class MyLine2 {
 		body.put("messages", Collections.singletonList(message));
 
 		System.out.println("test");
-
-		// HTTPリクエストを送信
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.postForObject(url, new HttpEntity<>(body, headers), String.class);
-	}
-
-	private void replyMovieMessage(String replyToken, String movieUrl, String thumnailImg) {
-		// LINE APIのエンドポイント
-		String url = "https://api.line.me/v2/bot/message/reply";
-
-		// HTTPヘッダーにChannel Access Tokenを設定
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Authorization", "Bearer " + channelAccessToken);
-
-		// 送信するメッセージを設定
-		Map<String, Object> message = new HashMap<>();
-		message.put("type", "video");
-		message.put("originalContentUrl", movieUrl);
-		message.put("previewImageUrl", thumnailImg);
-
-		// リクエストボディを設定
-		Map<String, Object> body = new HashMap<>();
-		body.put("replyToken", replyToken);
-		body.put("messages", Collections.singletonList(message));
 
 		// HTTPリクエストを送信
 		RestTemplate restTemplate = new RestTemplate();
