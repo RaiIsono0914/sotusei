@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -17,9 +16,7 @@ public class attend {
 	///1限のアラーム////
 	@Scheduled(cron = "0 35 9 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void FirstMessage() {
-		LocalTime currentTime = LocalTime.now();//時間を取得するためのやつ
-		int hour = currentTime.getHour();//時を取得
-		int min = currentTime.getMinute();//分を取得
+
 		//初期化
 		List<Map<String, Object>> resultList;
 		Object attendObject = null;
@@ -38,9 +35,6 @@ public class attend {
 	///2限のアラーム////
 	@Scheduled(cron = "0 20 11 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void SecondMessage() {
-		LocalTime currentTime = LocalTime.now();//時間を取得するためのやつ
-		int hour = currentTime.getHour();//時を取得
-		int min = currentTime.getMinute();//分を取得
 		//初期化
 		List<Map<String, Object>> resultList;
 		Object attendObject = null;
@@ -58,9 +52,6 @@ public class attend {
 	///3限のアラーム////
 	@Scheduled(cron = "0 50 13 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void ThirdMessage() {
-		LocalTime currentTime = LocalTime.now();//時間を取得するためのやつ
-		int hour = currentTime.getHour();//時を取得
-		int min = currentTime.getMinute();//分を取得
 		//初期化
 		List<Map<String, Object>> resultList;
 		Object attendObject = null;
@@ -79,9 +70,6 @@ public class attend {
 	//	///1限のアラーム////
 	@Scheduled(cron = "0 15 10 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void absenceFirstMessage() {
-		LocalTime currentTime = LocalTime.now();//時間を取得するためのやつ
-		int hour = currentTime.getHour();//時を取得
-		int min = currentTime.getMinute();//分を取得
 		//初期化
 		List<Map<String, Object>> resultList;
 		Object attendObject = null;
@@ -100,9 +88,7 @@ public class attend {
 	///2限のアラーム////
 	@Scheduled(cron = "0 0 12 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void absenceSecondMessage() {
-		LocalTime currentTime = LocalTime.now();//時間を取得するためのやつ
-		int hour = currentTime.getHour();//時を取得
-		int min = currentTime.getMinute();//分を取得
+
 		//初期化
 		List<Map<String, Object>> resultList;
 		Object attendObject = null;
@@ -120,9 +106,7 @@ public class attend {
 	///3限のアラーム////
 	@Scheduled(cron = "0 30 14 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void AbsenceMessage() {
-		LocalTime currentTime = LocalTime.now();//時間を取得するためのやつ
-		int hour = currentTime.getHour();//時を取得
-		int min = currentTime.getMinute();//分を取得
+
 		//初期化
 		List<Map<String, Object>> resultList;
 		Object attendObject = null;
