@@ -138,7 +138,7 @@ public class attend {
 	}
 
 	//データ保存
-	@Scheduled(cron = "0 0 17 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
+	@Scheduled(cron = "0 00 17 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void sevedata() {
 		List<Map<String, Object>> resultList = jdbcTemplate.queryForList("select * FROM user");
 
@@ -149,10 +149,13 @@ public class attend {
 			int class1 = (int) result.get("class1");
 			int class2 = (int) result.get("class2");
 			int class3 = (int) result.get("class3");
-
+			String class1time = (String) result.get("class1time");
+			String class2time = (String) result.get("class2time");
+			String class3time = (String) result.get("class3time");
+			String pc = (String) result.get("user_pc");
 			// attendlogテーブルにデータを挿入
-			String insertSql = "INSERT INTO attendlog (user_id,class1, class2, class3) VALUES (?, ?, ?,?)";
-			jdbcTemplate.update(insertSql, user_id, class1, class2, class3);
+			String insertSql = "INSERT INTO attendlog (user_id,class1, class2, class3,class1time,class2time,class3time,pc) VALUES (?, ?, ?,?,?,?,?,?)";
+			jdbcTemplate.update(insertSql, user_id, class1, class2, class3, class1time, class2time, class3time, pc);
 			System.out.println("今日の出席情報をDBに保存しました");
 		}
 	}
@@ -163,9 +166,15 @@ public class attend {
 		System.out.println("今日の出席情報を初期化しました");
 	}
 
-	@Scheduled(cron = "0 0 17 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
-	public void delesoutai() {
-		jdbcTemplate.update("DELETE from soutai;");
-		System.out.println("今日の早退申請を初期化しました");
-	}
+//	@Scheduled(cron = "0 0 17 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
+//	public void delesoutai() {
+//		jdbcTemplate.update("DELETE from soutai;");
+//		System.out.println("今日の早退申請を初期化しました");
+//	}
+
+    //毎朝8時
+    @Scheduled(cron = "0 0 8 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
+    public void pchenkyaku() {
+        jdbcTemplate.update("UPDATE user SET user_pc = null WHERE user_pc IS NOT NULL");
+    }
 }

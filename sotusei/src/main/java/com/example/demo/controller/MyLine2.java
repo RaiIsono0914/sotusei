@@ -175,20 +175,37 @@ public class MyLine2 {
 				String message = "以下の申請が許可されました\n\n";
 				String name = "";
 				String id = "";
+				String time="";
 				for (Map<String, Object> resultMap : resultList) {
 					name = (String) resultMap.get("student_name");
 					String reason = (String) resultMap.get("reason");
 					id = (String) resultMap.get("student_id");
-					String time = (String) resultMap.get("t");
+					time = (String) resultMap.get("time");
 					message += name + "さん\n申請ID:" + judgeid+"\n早退時間:" + time + "\n-------早退理由-------\n" + reason
 							+ "\n-------早退理由-------";
 				}
+
+
 
 				MyLine myline = new MyLine();
 				myline.soutai_judge(message, id);
 
 				jdbcTemplate.update(
 						"UPDATE soutai SET judge = 1 where id=?;", judgeid);
+
+				int timeint = Integer.parseInt(time);
+
+				if(timeint<=1015) {//一限と二限と三限
+					jdbcTemplate.update(
+							"UPDATE user SET class1 = 5, class2 = 5, class3 = 5 WHERE user_id = ?", id);
+				}else if(timeint<=1200) {//三限と二限
+					jdbcTemplate.update(
+							"UPDATE user SET class2 = 5, class3 = 5 WHERE user_id = ?", id);
+				}else if(timeint>=1201){//三限
+					jdbcTemplate.update(
+							"UPDATE user SET class3 = 5 WHERE user_id = ?", id);
+				}
+
 
 			} else if ("soutai_sinsa".equals(userStateService.getUserState(userId)) && "不許可".equals(replyText)) {
 				System.out.println("申請を不許可しました");

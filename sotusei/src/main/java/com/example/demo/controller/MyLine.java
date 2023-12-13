@@ -45,12 +45,12 @@ public class MyLine {
 			// ユーザIDを取得する。
 			String userId = event.getSource().getUserId();
 
-			if("キャンセル".equals(replyText)){
+			if ("キャンセル".equals(replyText)) {
 				userStateService.removeUserState(userId);
 				String replyMessageText = "操作をキャンセルしました\nメニューから選択してください";
 				replyMessage(replyToken, replyMessageText);
-			///////////////////登録/////////////////
-			}else if ("登録".equals(replyText)) {
+				///////////////////登録/////////////////
+			} else if ("登録".equals(replyText)) {
 				List<Map<String, Object>> resultList = jdbcTemplate
 						.queryForList("SELECT user_id FROM user WHERE user_id = ?", userId);
 
@@ -103,7 +103,7 @@ public class MyLine {
 						"INSERT INTO user ( user_id ,user_number ,user_name ,user_grade,user_classroom,class1 ,class2 ,class3 ) VALUES (?,?,?,?,?,?,?,?);",
 						userId, number, name, grade, classroom, 0, 0, 0);
 				System.out.println("登録完了");
-				////////////////////////出席////////////////////////////////////////////////
+				////////////////////////////////////////////////////////////出席////////////////////////////////////////////////
 			} else if ("出席".equals(replyText)) {
 				LocalTime currentTime = LocalTime.now();//時間を取得
 				int hour = currentTime.getHour();
@@ -156,19 +156,28 @@ public class MyLine {
 						attendObject = firstRow2.get("class1");
 						attend = attendObject.toString();
 
+						currentTime = LocalTime.now();//時間を取得するためのやつ
+						hour = currentTime.getHour();//時を取得
+						int min = currentTime.getMinute();//分を取得
+
+						String time_hour = Integer.toString(hour);
+						String time_min = Integer.toString(min);
+						String time = time_hour + time_min;
+
 						if (attend.equals("0")) {
-							jdbcTemplate.update("UPDATE user SET class1 = ? WHERE user_id = ?;", 1, userId);
+							jdbcTemplate.update("UPDATE user SET class1 = ?,class1time=? WHERE user_id = ?;", 1,time, userId);
 
 							System.out.println("passok");
 							String replyMessageText = "出席出来ました。";
 							replyMessage(replyToken, replyMessageText);
 							userStateService.removeUserState(userId);
 						} else if (attend.equals("4")) {
-							jdbcTemplate.update("UPDATE user SET class1 = ? WHERE user_id = ?;", 2, userId);
+							jdbcTemplate.update("UPDATE user SET class1 = ?,class1time=? WHERE user_id = ?;", 2,time, userId);
 
 							System.out.println("passok");
 							String replyMessageText = "遅刻です。急ぎましょう。";
 							replyMessage(replyToken, replyMessageText);
+							userStateService.removeUserState(userId);
 
 						} else {
 							String replyMessageText = "既に出席情報が入力されています。";
@@ -202,19 +211,28 @@ public class MyLine {
 						attendObject = firstRow2.get("class2");
 						attend = attendObject.toString();
 
+						currentTime = LocalTime.now();//時間を取得するためのやつ
+						hour = currentTime.getHour();//時を取得
+						int min = currentTime.getMinute();//分を取得
+
+						String time_hour = Integer.toString(hour);
+						String time_min = Integer.toString(min);
+						String time = time_hour + time_min;
+
 						if (attend.equals("0")) {
-							jdbcTemplate.update("UPDATE user SET class2 = ? WHERE user_id = ?;", 1, userId);
+							jdbcTemplate.update("UPDATE user SET class2 = ?,class2time=? WHERE user_id = ?;", 1,time, userId);
 
 							System.out.println("passok");
 							String replyMessageText = "出席出来ました。";
 							replyMessage(replyToken, replyMessageText);
 							userStateService.removeUserState(userId);
 						} else if (attend.equals("4")) {
-							jdbcTemplate.update("UPDATE user SET class2 = ? WHERE user_id = ?;", 2, userId);
+							jdbcTemplate.update("UPDATE user SET class2 = ?,class2time=? WHERE user_id = ?;", 2,time, userId);
 
 							System.out.println("passok");
 							String replyMessageText = "遅刻です。急ぎましょう。";
 							replyMessage(replyToken, replyMessageText);
+							userStateService.removeUserState(userId);
 
 						} else {
 							String replyMessageText = "既に出席情報が入力されています。";
@@ -257,22 +275,32 @@ public class MyLine {
 						attendObject = firstRow2.get("class3");
 						attend = attendObject.toString();
 
+
+						currentTime = LocalTime.now();//時間を取得するためのやつ
+						hour = currentTime.getHour();//時を取得
+						int min = currentTime.getMinute();//分を取得
+
+						String time_hour = Integer.toString(hour);
+						String time_min = Integer.toString(min);
+						String time = time_hour + time_min;
+
 						if (attend.equals("0")) {//出席状況が未入力の場合
 
 							//出席をDBに送信
 							System.out.println(userId);
-							jdbcTemplate.update("UPDATE user SET class3 = ? WHERE user_id = ?;", 1, userId);
+							jdbcTemplate.update("UPDATE user SET class3 = ?,class3time WHERE user_id = ?;", 1,time, userId);
 
 							System.out.println("passok");
 							String replyMessageText = "出席出来ました。";
 							replyMessage(replyToken, replyMessageText);
 							userStateService.removeUserState(userId);//ユーザーの状況リセット
 						} else if (attend.equals("4")) {
-							jdbcTemplate.update("UPDATE user SET class3 = ? WHERE user_id = ?;", 2, userId);
+							jdbcTemplate.update("UPDATE user SET class3 = ?,class3time WHERE user_id = ?;", 2,time, userId);
 
 							System.out.println("passok");
 							String replyMessageText = "遅刻です。急ぎましょう。";
 							replyMessage(replyToken, replyMessageText);
+							userStateService.removeUserState(userId);
 
 						} else {//出席状況が入力済みの場合（遅刻等）
 							String replyMessageText = "既に出席情報が入力されています。";
@@ -325,11 +353,11 @@ public class MyLine {
 				String teacherId = (String) teacherIdMap.get("user_id");
 				System.out.println(teacherId);
 
-				String time =userStateService.getUserSoutaiTime(userId);
+				String time = userStateService.getUserSoutaiTime(userId);
 				System.out.println(time);
 				jdbcTemplate.update(
 						"INSERT INTO soutai ( teacher_id ,student_name ,reason,judge,student_id,time) VALUES (?,?,?,0,?,?);",
-						teacherId, name, replyText,userId,time);
+						teacherId, name, replyText, userId, time);
 
 				MyLine2 myline2 = new MyLine2();
 				myline2.soutai(teacherId, name);

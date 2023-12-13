@@ -32,12 +32,6 @@ public class Password {
         }
     }
 
-    //毎朝8時
-    @Scheduled(cron = "0 0 8 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
-    public void pchenkyaku() {
-        jdbcTemplate.update("UPDATE user SET user_pc = null WHERE user_pc IS NOT NULL");
-    }
-
 
 
     public String generateRandomPassword(int length) {
