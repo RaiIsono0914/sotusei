@@ -55,7 +55,7 @@ public class MyLine {
 						.queryForList("SELECT user_id FROM user WHERE user_id = ?", userId);
 
 				if (resultList.isEmpty()) {
-					String replyMessageText = "学籍番号を入力してください";
+					String replyMessageText = "学籍番号を半角で入力してください";
 					replyMessage(replyToken, replyMessageText);
 					userStateService.setUserState(userId, "number");//状態保存
 				} else {
@@ -66,43 +66,70 @@ public class MyLine {
 
 			} else if ("number".equals(userStateService.getUserState(userId))) {
 
-				String replyMessageText = "名前を入力して下さい";
-				replyMessage(replyToken, replyMessageText);
-				userStateService.setUserState(userId, "wait_name");
-				userStateService.setUserNumber(userId, replyText);//学籍番号一時保存
+				int length = replyText.length();
+
+				if (length == 7) {
+
+					String replyMessageText = "名前を入力して下さい";
+					replyMessage(replyToken, replyMessageText);
+					userStateService.setUserState(userId, "wait_name");
+					userStateService.setUserNumber(userId, replyText);//学籍番号一時保存
+				} else {
+					String replyMessageText = "学籍番号が正しくありません\n最初からやり直してください";
+					replyMessage(replyToken, replyMessageText);
+					userStateService.removeUserState(userId);
+				}
 
 			} else if ("wait_name".equals(userStateService.getUserState(userId))) {
-				String replyMessageText = "学年を入力して下さい　例：2";
+				String replyMessageText = "学年を半角で入力して下さい　例：2";
 				replyMessage(replyToken, replyMessageText);
 				userStateService.setUserState(userId, "wait_grade");
 				userStateService.setUserName(userId, replyText);
 
 			} else if ("wait_grade".equals(userStateService.getUserState(userId))) {
-				String replyMessageText = "クラスして下さい　例：D";
-				replyMessage(replyToken, replyMessageText);
-				userStateService.setUserState(userId, "wait_classroom");
-				userStateService.setUserGrade(userId, replyText);
+				System.out.println(replyText);
+				if (replyText.trim().equals("1") || replyText.trim().equals("2") || replyText.trim().equals("3")
+						|| replyText.trim().equals("4")) {
+					// ここに処理を記述
+					String replyMessageText = "クラスを半角大文字で入力して下さい　例：D";
+					replyMessage(replyToken, replyMessageText);
+					userStateService.setUserState(userId, "wait_classroom");
+					userStateService.setUserGrade(userId, replyText);
+				} else {
+					String replyMessageText = "学年が正しくありません\n最初からやり直してください";
+					replyMessage(replyToken, replyMessageText);
+					userStateService.removeUserState(userId);
+				}
 
 			} else if ("wait_classroom".equals(userStateService.getUserState(userId))) {
-				String replyMessageText = "登録完了しました";
-				replyMessage(replyToken, replyMessageText);
-				userStateService.removeUserState(userId);
-				userStateService.setUserClassroom(userId, replyText);
 
-				//DB保存
+				if (isUppercaseLetter(replyText)) {
 
-				int number = Integer.parseInt(userStateService.getUserNumber(userId));
-				String name = userStateService.getUserName(userId);
-				String grade = userStateService.getUserGrade(userId);
-				String classroom = userStateService.getUserClassroom(userId);
+					String replyMessageText = "登録完了しました";
+					replyMessage(replyToken, replyMessageText);
+					userStateService.removeUserState(userId);
+					userStateService.setUserClassroom(userId, replyText);
 
-				System.out.println(number + name + grade + classroom);//確認
+					//DB保存
 
-				//登録情報入力DB
-				jdbcTemplate.update(
-						"INSERT INTO user ( user_id ,user_number ,user_name ,user_grade,user_classroom,class1 ,class2 ,class3 ) VALUES (?,?,?,?,?,?,?,?);",
-						userId, number, name, grade, classroom, 0, 0, 0);
-				System.out.println("登録完了");
+					int number = Integer.parseInt(userStateService.getUserNumber(userId));
+					String name = userStateService.getUserName(userId);
+					String grade = userStateService.getUserGrade(userId);
+					String classroom = userStateService.getUserClassroom(userId);
+
+					System.out.println(number + name + grade + classroom);//確認
+
+					//登録情報入力DB
+					jdbcTemplate.update(
+							"INSERT INTO user ( user_id ,user_number ,user_name ,user_grade,user_classroom,class1 ,class2 ,class3 ) VALUES (?,?,?,?,?,?,?,?);",
+							userId, number, name, grade, classroom, 0, 0, 0);
+					System.out.println("登録完了");
+				} else {
+					String replyMessageText = "クラスが正しくありません\n最初からやり直してください";
+					replyMessage(replyToken, replyMessageText);
+					userStateService.removeUserState(userId);
+				}
+
 				////////////////////////////////////////////////////////////出席////////////////////////////////////////////////
 			} else if ("出席".equals(replyText)) {
 				LocalTime currentTime = LocalTime.now();//時間を取得
@@ -110,7 +137,7 @@ public class MyLine {
 
 				if (hour == 9 || hour == 10 || hour == 11 || hour == 13 || hour == 14) {//時間
 
-					String replyMessageText = "パスワードを入力してください";
+					String replyMessageText = "パスワードを半角で入力してください";
 					replyMessage(replyToken, replyMessageText);
 					userStateService.setUserState(userId, "wait_pass");
 				} else {
@@ -165,14 +192,16 @@ public class MyLine {
 						String time = time_hour + time_min;
 
 						if (attend.equals("0")) {
-							jdbcTemplate.update("UPDATE user SET class1 = ?,class1time=? WHERE user_id = ?;", 1,time, userId);
+							jdbcTemplate.update("UPDATE user SET class1 = ?,class1time=? WHERE user_id = ?;", 1, time,
+									userId);
 
 							System.out.println("passok");
 							String replyMessageText = "出席出来ました。";
 							replyMessage(replyToken, replyMessageText);
 							userStateService.removeUserState(userId);
 						} else if (attend.equals("4")) {
-							jdbcTemplate.update("UPDATE user SET class1 = ?,class1time=? WHERE user_id = ?;", 2,time, userId);
+							jdbcTemplate.update("UPDATE user SET class1 = ?,class1time=? WHERE user_id = ?;", 2, time,
+									userId);
 
 							System.out.println("passok");
 							String replyMessageText = "遅刻です。急ぎましょう。";
@@ -220,14 +249,16 @@ public class MyLine {
 						String time = time_hour + time_min;
 
 						if (attend.equals("0")) {
-							jdbcTemplate.update("UPDATE user SET class2 = ?,class2time=? WHERE user_id = ?;", 1,time, userId);
+							jdbcTemplate.update("UPDATE user SET class2 = ?,class2time=? WHERE user_id = ?;", 1, time,
+									userId);
 
 							System.out.println("passok");
 							String replyMessageText = "出席出来ました。";
 							replyMessage(replyToken, replyMessageText);
 							userStateService.removeUserState(userId);
 						} else if (attend.equals("4")) {
-							jdbcTemplate.update("UPDATE user SET class2 = ?,class2time=? WHERE user_id = ?;", 2,time, userId);
+							jdbcTemplate.update("UPDATE user SET class2 = ?,class2time=? WHERE user_id = ?;", 2, time,
+									userId);
 
 							System.out.println("passok");
 							String replyMessageText = "遅刻です。急ぎましょう。";
@@ -275,7 +306,6 @@ public class MyLine {
 						attendObject = firstRow2.get("class3");
 						attend = attendObject.toString();
 
-
 						currentTime = LocalTime.now();//時間を取得するためのやつ
 						hour = currentTime.getHour();//時を取得
 						int min = currentTime.getMinute();//分を取得
@@ -288,14 +318,16 @@ public class MyLine {
 
 							//出席をDBに送信
 							System.out.println(userId);
-							jdbcTemplate.update("UPDATE user SET class3 = ?,class3time WHERE user_id = ?;", 1,time, userId);
+							jdbcTemplate.update("UPDATE user SET class3 = ?,class3time WHERE user_id = ?;", 1, time,
+									userId);
 
 							System.out.println("passok");
 							String replyMessageText = "出席出来ました。";
 							replyMessage(replyToken, replyMessageText);
 							userStateService.removeUserState(userId);//ユーザーの状況リセット
 						} else if (attend.equals("4")) {
-							jdbcTemplate.update("UPDATE user SET class3 = ?,class3time WHERE user_id = ?;", 2,time, userId);
+							jdbcTemplate.update("UPDATE user SET class3 = ?,class3time WHERE user_id = ?;", 2, time,
+									userId);
 
 							System.out.println("passok");
 							String replyMessageText = "遅刻です。急ぎましょう。";
@@ -400,6 +432,11 @@ public class MyLine {
 	public void soutai_judge(String message, String id) {
 
 		pushMessage(id, message);
+	}
+
+	public static boolean isUppercaseLetter(String input) {
+		// 正規表現を使用して半角大文字の英字かどうかを判断
+		return input.matches("^[A-Z]$");
 	}
 
 	/*******************************************************************:

@@ -235,10 +235,13 @@ public class MyLine2 {
 
 				jdbcTemplate.update(
 						"UPDATE soutai SET judge = 2 where id=?;", judgeid);
-
+			} else if ("soutai_sinsa".equals(userStateService.getUserState(userId))) {
+				String replyMessageText = "正しくない文字が送信されました。\nメニューから選択してください";
+				replyMessage(replyToken, replyMessageText);
 				//				////////////////////////////////////////////////////////////////////////////////////
 			} else {
 				replyMessage(replyToken, "メニューから選択してください");
+				userStateService.removeUserState(userId);
 			}
 		}
 
@@ -278,7 +281,7 @@ public class MyLine2 {
 		System.out.println("一限の遅刻者を教員に通知しました");
 	}
 
-	@Scheduled(cron = "30 39 11 * * MON-FRI")
+	@Scheduled(cron = "0 21 11 * * MON-FRI")
 	public void class2tikoku() {
 
 		List<Map<String, Object>> resultList;
