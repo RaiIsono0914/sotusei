@@ -44,46 +44,63 @@ public class MyLine2 {
 
 			// ユーザIDを取得する。
 			String userId = event.getSource().getUserId();
-
-			///////////////////登録/////////////////
+			///////////////////キャンセル/////////////////
 			if ("キャンセル".equals(replyText)) {
 				userStateService.removeUserState(userId);
 				String replyMessageText = "操作をキャンセルしました\nメニューから選択してください";
 				replyMessage(replyToken, replyMessageText);
+
+				///////////////////登録/////////////////
 			} else if ("登録".equals(replyText)) {
 				String replyMessageText = "名前を入力して下さい";
 				replyMessage(replyToken, replyMessageText);
 				userStateService.setUserState(userId, "wait_name");
 				userStateService.setUserName(userId, replyText);
 			} else if ("wait_name".equals(userStateService.getUserState(userId))) {
-				String replyMessageText = "学年を入力してください";
+				String replyMessageText = "学年を半角で入力して下さい　例：2";
 				replyMessage(replyToken, replyMessageText);
 				userStateService.setUserState(userId, "gakunen");//状態保存
 				userStateService.setUserName(userId, replyText);
 			} else if ("gakunen".equals(userStateService.getUserState(userId))) {
-				String replyMessageText = "クラスを入力して下さい";
-				replyMessage(replyToken, replyMessageText);
-				userStateService.setUserState(userId, "wait_classroom");
-				userStateService.setUserGrade(userId, replyText);
 
+				if (replyText.trim().equals("1") || replyText.trim().equals("2") || replyText.trim().equals("3")
+						|| replyText.trim().equals("4")) {
+					// ここに処理を記述
+					String replyMessageText = "クラスを半角大文字で入力して下さい　例：D";
+					replyMessage(replyToken, replyMessageText);
+					userStateService.setUserState(userId, "wait_classroom");
+					userStateService.setUserGrade(userId, replyText);
+				} else {
+					String replyMessageText = "学年が正しくありません\n最初からやり直してください";
+					replyMessage(replyToken, replyMessageText);
+					userStateService.removeUserState(userId);
+				}
 			} else if ("wait_classroom".equals(userStateService.getUserState(userId))) {
-				String replyMessageText = "登録完了しました";
-				replyMessage(replyToken, replyMessageText);
-				userStateService.removeUserState(userId);
-				userStateService.setUserClassroom(userId, replyText);
 
-				//DB保存
+				if (isUppercaseLetter(replyText)) {
 
-				String name = userStateService.getUserName(userId);
-				String grade = userStateService.getUserGrade(userId);
-				String classroom = userStateService.getUserClassroom(userId);
+					String replyMessageText = "登録完了しました";
+					replyMessage(replyToken, replyMessageText);
+					userStateService.removeUserState(userId);
+					userStateService.setUserClassroom(userId, replyText);
 
-				System.out.println(name + grade + classroom);//確認
+					//DB保存
 
-				//登録情報入力DB
-				jdbcTemplate.update(
-						"INSERT INTO teacher ( user_id ,user_name ,user_grade,user_classroom ) VALUES (?,?,?,?);",
-						userId, name, grade, classroom);
+					String name = userStateService.getUserName(userId);
+					String grade = userStateService.getUserGrade(userId);
+					String classroom = userStateService.getUserClassroom(userId);
+
+					System.out.println(name + grade + classroom);//確認
+
+					//登録情報入力DB
+					jdbcTemplate.update(
+							"INSERT INTO teacher ( user_id ,user_name ,user_grade,user_classroom ) VALUES (?,?,?,?);",
+							userId, name, grade, classroom);
+				} else {
+					String replyMessageText = "クラスが正しくありません\n最初からやり直してください";
+					replyMessage(replyToken, replyMessageText);
+					userStateService.removeUserState(userId);
+				}
 
 			} else if ("遅刻確認".equals(replyText)) {
 
@@ -115,24 +132,29 @@ public class MyLine2 {
 				resultList = jdbcTemplate
 						.queryForList("SELECT student_name,reason,id,time FROM soutai WHERE teacher_id=? AND judge=0",
 								userId);
+				if (resultList.isEmpty()) {
+					String replyMessageText = "申請はありません。";
+					replyMessage(replyToken, replyMessageText);
+				} else {
 
-				for (Map<String, Object> resultMap : resultList) {
-					String name = (String) resultMap.get("student_name");
-					String reason = (String) resultMap.get("reason");
-					Object id = resultMap.get("id");
-					String time =(String) resultMap.get("time");
-					message = message + (name + "さん\n申請ID:" + id +"\n早退時間:" + time + "\n-------早退理由-------\n" + reason
-							+ "\n-------早退理由-------\n" + "\n");
+					for (Map<String, Object> resultMap : resultList) {
+						String name = (String) resultMap.get("student_name");
+						String reason = (String) resultMap.get("reason");
+						Object id = resultMap.get("id");
+						String time = (String) resultMap.get("time");
+						message = message
+								+ (name + "さん\n申請ID:" + id + "\n早退時間:" + time + "\n-------早退理由-------\n" + reason
+										+ "\n-------早退理由-------\n" + "\n");
 
+					}
+
+					message += "申請IDを送信して許可、不許可を決定してください";
+
+					String replyMessageText = message;
+					replyMessage(replyToken, replyMessageText);
+
+					userStateService.setUserState(userId, "soutai_kakunin");
 				}
-
-				message += "申請IDを送信して許可、不許可を決定してください";
-
-				String replyMessageText = message;
-				replyMessage(replyToken, replyMessageText);
-
-				userStateService.setUserState(userId, "soutai_kakunin");
-
 			} else if ("soutai_kakunin".equals(userStateService.getUserState(userId))) {
 				String id = replyText;
 				String message = "早退申請審査\n\n";
@@ -150,9 +172,9 @@ public class MyLine2 {
 					for (Map<String, Object> resultMap : resultList) {
 						String name = (String) resultMap.get("student_name");
 						String reason = (String) resultMap.get("reason");
-						String time =(String) resultMap.get("time");
+						String time = (String) resultMap.get("time");
 
-						message += name + "さん\n申請ID:" + id+"\n早退時間:" + time + "\n-------早退理由-------\n" + reason
+						message += name + "さん\n申請ID:" + id + "\n早退時間:" + time + "\n-------早退理由-------\n" + reason
 								+ "\n-------早退理由-------\n上記の申請を許可しますか？\n許可する場合は「許可」\n許可しない場合は「不許可」\nを送信してください";
 					}
 
@@ -175,17 +197,15 @@ public class MyLine2 {
 				String message = "以下の申請が許可されました\n\n";
 				String name = "";
 				String id = "";
-				String time="";
+				String time = "";
 				for (Map<String, Object> resultMap : resultList) {
 					name = (String) resultMap.get("student_name");
 					String reason = (String) resultMap.get("reason");
 					id = (String) resultMap.get("student_id");
 					time = (String) resultMap.get("time");
-					message += name + "さん\n申請ID:" + judgeid+"\n早退時間:" + time + "\n-------早退理由-------\n" + reason
+					message += name + "さん\n申請ID:" + judgeid + "\n早退時間:" + time + "\n-------早退理由-------\n" + reason
 							+ "\n-------早退理由-------";
 				}
-
-
 
 				MyLine myline = new MyLine();
 				myline.soutai_judge(message, id);
@@ -195,17 +215,16 @@ public class MyLine2 {
 
 				int timeint = Integer.parseInt(time);
 
-				if(timeint<=1015) {//一限と二限と三限
+				if (timeint <= 1015) {//一限と二限と三限
 					jdbcTemplate.update(
 							"UPDATE user SET class1 = 5, class2 = 5, class3 = 5 WHERE user_id = ?", id);
-				}else if(timeint<=1200) {//三限と二限
+				} else if (timeint <= 1200) {//三限と二限
 					jdbcTemplate.update(
 							"UPDATE user SET class2 = 5, class3 = 5 WHERE user_id = ?", id);
-				}else if(timeint>=1201){//三限
+				} else if (timeint >= 1201) {//三限
 					jdbcTemplate.update(
 							"UPDATE user SET class3 = 5 WHERE user_id = ?", id);
 				}
-
 
 			} else if ("soutai_sinsa".equals(userStateService.getUserState(userId)) && "不許可".equals(replyText)) {
 				System.out.println("申請を不許可しました");
@@ -335,6 +354,11 @@ public class MyLine2 {
 			}
 		}
 		System.out.println("三限の遅刻者を教員に通知しました");
+	}
+
+	public static boolean isUppercaseLetter(String input) {
+		// 正規表現を使用して半角大文字の英字かどうかを判断
+		return input.matches("^[A-Z]$");
 	}
 
 	/*******************************************************************:

@@ -2,222 +2,12 @@
 <html>
 
 <head>
-	<meta charset="UTF-8">
-	<title>ユーザー更新</title>
-	<style>
-		/* ◆CSSリセット◆ */
-		html,
-		body,
-		h1,
-		h2,
-		h3,
-		h4,
-		h5,
-		h6,
-		p,
-		ul,
-		li,
-		header,
-		footer,
-		main,
-		article,
-		section,
-		figure {
-			margin: 0;
-			padding: 0;
-		}
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
 
-
-		/* ◆基本◆ */
-		body {
-			line-height: 2em;
-			letter-spacing: 1px;
-			font-size: 14px;
-			color: #555;
-			font-family: "游ゴシック", "Yu Gothic";
-		}
-
-		#wrap {
-			width: 75%;
-			margin: 0 auto;
-		}
-
-		a {
-			text-decoration: none;
-			color: rgb(54, 114, 129);
-		}
-
-		section a:visited {
-			color: #ffd037;
-		}
-
-		a:hover {
-			color: #ff7043;
-		}
-
-
-		/* ◆ヘッダ◆ */
-		header {
-			background-color: rgb(233, 244, 245);
-			color: rgb(4, 0, 53);
-			text-align: center;
-		}
-
-		#head1 {
-			background-color: white;
-			padding: 15px 0 0 0;
-
-		}
-
-		#newsimag {
-			width: 25%;
-			height: 25%;
-		}
-
-		h1 {
-			position: relative;
-			display: inline-block;
-			padding: 0 55px;
-		}
-
-		h1:before,
-		h1:after {
-			content: '';
-			position: absolute;
-			top: 50%;
-			display: inline-block;
-			width: 45px;
-			height: 2px;
-			border-top: solid 1px black;
-			border-bottom: solid 1px black;
-		}
-
-		h1:before {
-			left: 0;
-		}
-
-		h1:after {
-			right: 0;
-		}
-
-
-		/* ◆ナビ◆ */
-		nav {
-			margin-bottom: 20px;
-			overflow: hidden;
-			width: 100%;
-			margin: 0 auto;
-		}
-
-		nav ul li {
-			background: rgb(54, 114, 129);
-			list-style-type: none;
-			float: left;
-			width: 25%;
-			text-align: center;
-			line-height: 40px;
-			color: #df9;
-		}
-
-		nav a {
-			color: #fff;
-		}
-
-		/* ◆記事◆ */
-		h2 {
-			padding: 1%;
-			margin: 1%;
-			border-left: solid 10px rgb(54, 114, 129);
-		}
-
-		article {
-			display: grid;
-			grid-template-columns: 1fr 1fr 1fr;
-			gap: 20px 10px;
-		}
-
-
-		/* ◆セクション◆ */
-		section {
-			border: solid 1px #ccc;
-			margin-bottom: 20px;
-			padding: 25px;
-			width: 75%;
-			margin: 0 auto;
-		}
-
-		section img {
-			margin: 10px;
-			float: left;
-			max-width: 30%;
-			height: auto;
-		}
-
-		.box_18 {
-			position: relative;
-			padding: 1.5em;
-			border: 2px solid rgb(54, 114, 129);
-			width: 75%;
-			margin: 0 auto;
-		}
-
-		.box_18_ttl {
-			position: absolute;
-			padding: 0 0.5em;
-			left: 30px;
-			top: -10px;
-			background: #fff;
-			font-weight: bold;
-		}
-
-		section p {
-			margin-bottom: 20px;
-		}
-
-
-		/* ページング */
-		.page {
-			text-align: center;
-			list-style: none;
-			margin-top: 20px;
-			margin-bottom: 20px;
-		}
-
-		.page li {
-			display: inline-block;
-			width: 30px;
-			height: 30px;
-			text-align: center;
-			line-height: 30px;
-			font-size: 14px;
-			border: 2px solid rgb(54, 114, 129);
-			margin-right: 5px;
-		}
-
-		.page li a {
-			display: block;
-			text-decoration: none;
-			color: #333;
-			color: rgb(54, 114, 129);
-			font-weight: bold;
-		}
-
-		.page .this {
-			background-color: rgb(54, 114, 129);
-			color: #fff;
-		}
-
-		/* ◆フッタ◆ */
-		footer {
-			clear: both;
-			height: 40px;
-			line-height: 40px;
-			font-size: 12px;
-			background-color: rgb(54, 114, 129);
-			text-align: center;
-			color: #df9;
-		}
-	</style>
+<title>ユーザー更新</title>
+<style>
+</style>
 </head>
 
 <body>
@@ -227,38 +17,75 @@
 	</header>
 	<nav>
 		<ul>
+			<li><a th:href="@{/homee}">ホーム</a></li>
 			<li><a th:href="@{/linebot}">新しい生徒を登録</a></li>
 			<li><a th:href="@{/ppassword}">本日のパスワード</a></li>
 			<li><a th:href="@{/linebotupdata}">生徒情報の更新</a></li>
 			<li><a th:href="@{/attend_list}">出席情報</a></li>
+			<li><a th:href="@{/attendlog}">過去のログ</a></li>
+			<li><a th:href="@{/soutai}">早退理由</a></li>
 		</ul>
 	</nav>
 
 	<hr>
 	<main>
 		<form th:action="@{/linebotupdata}" method="POST">
+			<h2>編集</h2>
 			<p>あなたのidを設定してください</p>
-			あなたのid：<input type="number" name="user_id"> <br>
-			あなたの名前：<input type="text" name="user_name"> <br>
-			あなたのクラス：<input type="text" name="user_grade"> <br>
-			あなたのパソコン：<input type="text" name="user_lend"> <br>
-			あなたの出席番号：<input type="text" name="user_number"> <br>
-			あなたのクラス：<input type="text" name="user_classroom"> <br>
-			<input type="submit">
-		</form>
-		<h2>※注意※<br>ユーザ情報を削除する！</h2>
-		<form th:action="@{/linebotdelete}" method="POST" enctype="multipart/form-data">
-			更新対象のユーザid(数値)：<input type="text" name="user_id"> <br>
-			<input type="submit">
+			あなたのid：<input type="number" name="user_id"> <br> あなたの名前：<input
+				type="text" name="user_name"> <br> あなたのクラス：<input
+				type="text" name="user_grade"> <br> あなたのパソコン：<input
+				type="text" name="user_pc"> <br> あなたの出席番号：<input
+				type="text" name="user_number"> <br> あなたのクラス：<input
+				type="text" name="user_classroom"> <br> <input
+				type="submit">
 		</form>
 	</main>
 	</form>
 
+	<hr>
+	登録済データ一覧:
+	<br>
 
+	<table border="1">
+		<thead>
+			<tr>
+				<th>User ID</th>
+				<th>User Name</th>
+				<th>User grade</th>
+				<th>User classroom</th>
+				<th>User grade</th>
+				<th>削除</th>
+				<!-- 他のカラムも同様に修正 -->
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:if="${selectResult != null}"
+				th:each="result : ${selectResult}">
+				<td th:text="${result?.user_id}">User ID</td>
+				<td th:text="${result?.user_name}">User Name</td>
+				<td th:text="${result?.user_grade}">User grade</td>
+				<td th:text="${result?.user_classroom}">User classroom</td>
+				<td th:text="${result?.user_pc}">User pc</td>
+				<td>
+					<form th:action="@{/linebotdelete}" method="POST">
+						<input type="hidden" name="user_id" th:value="${result?.user_id}">
+						<input type="submit">
+					</form>
+
+				</td>
+
+				<!-- 他のカラムも同様に修正 -->
+			</tr>
+		</tbody>
+	</table>
 
 
 
 	<input type="button" onclick="history.back()" value="戻る">
+	<footer>
+		<p>&copy; News Site. All Rights Reserved.</p>
+	</footer>
 </body>
 
 </html>

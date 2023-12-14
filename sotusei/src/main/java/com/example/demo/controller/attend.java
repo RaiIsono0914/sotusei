@@ -122,14 +122,14 @@ public class attend {
 	}
 
 	//データ保存
-	@Scheduled(cron = "0 00 17 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
+	@Scheduled(cron = "0 53 14 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void sevedata() {
 		List<Map<String, Object>> resultList = jdbcTemplate.queryForList("select * FROM user");
 
 		for (Map<String, Object> result : resultList) {
 
 			// 取得したデータから必要な情報を取り出す
-			String user_id = (String) result.get("user_id");
+			String user_name = (String) result.get("user_name");
 			int class1 = (int) result.get("class1");
 			int class2 = (int) result.get("class2");
 			int class3 = (int) result.get("class3");
@@ -138,8 +138,8 @@ public class attend {
 			String class3time = (String) result.get("class3time");
 			String pc = (String) result.get("user_pc");
 			// attendlogテーブルにデータを挿入
-			String insertSql = "INSERT INTO attendlog (user_id,class1, class2, class3,class1time,class2time,class3time,pc) VALUES (?, ?, ?,?,?,?,?,?)";
-			jdbcTemplate.update(insertSql, user_id, class1, class2, class3, class1time, class2time, class3time, pc);
+			String insertSql = "INSERT INTO attendlog (user_name,class1, class2, class3,class1time,class2time,class3time,pc) VALUES (?, ?, ?,?,?,?,?,?)";
+			jdbcTemplate.update(insertSql, user_name, class1, class2, class3, class1time, class2time, class3time, pc);
 			System.out.println("今日の出席情報をDBに保存しました");
 		}
 	}
