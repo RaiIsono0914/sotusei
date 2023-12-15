@@ -32,16 +32,16 @@
 		<form th:action="@{/linebotupdata}" method="POST">
 			<h2>編集</h2>
 			<p>あなたのidを設定してください</p>
-			あなたのid：<input type="number" name="user_id"> <br> あなたの名前：<input
-				type="text" name="user_name"> <br> あなたのクラス：<input
-				type="text" name="user_grade"> <br> あなたのパソコン：<input
-				type="text" name="user_pc"> <br> あなたの出席番号：<input
-				type="text" name="user_number"> <br> あなたのクラス：<input
-				type="text" name="user_classroom"> <br> <input
-				type="submit">
+			<p>
+				あなたのid：<input type="test" name="user_id"> <br>
+				あなたの学籍番号：<input type="text" name="user_number"> <br>
+				あなたの名前：<input type="text" name="user_name"> <br>
+				あなたの学年：<input type="text" name="user_grade"> <br>
+				あなたのクラス：<input type="text" name="user_classroom"> <br> <input
+					type="submit">
+			</p>
 		</form>
 	</main>
-	</form>
 
 	<hr>
 	登録済データ一覧:
@@ -50,11 +50,12 @@
 	<table border="1">
 		<thead>
 			<tr>
-				<th>User ID</th>
-				<th>User Name</th>
-				<th>User grade</th>
-				<th>User classroom</th>
-				<th>User grade</th>
+				<th>LINE ID</th>
+				<th>学籍番号</th>
+				<th>名前</th>
+				<th>学年</th>
+				<th>クラス</th>
+				<th>PC番号</th>
 				<th>削除</th>
 				<!-- 他のカラムも同様に修正 -->
 			</tr>
@@ -63,6 +64,7 @@
 			<tr th:if="${selectResult != null}"
 				th:each="result : ${selectResult}">
 				<td th:text="${result?.user_id}">User ID</td>
+				<td th:text="${result?.user_number}">User ID</td>
 				<td th:text="${result?.user_name}">User Name</td>
 				<td th:text="${result?.user_grade}">User grade</td>
 				<td th:text="${result?.user_classroom}">User classroom</td>
@@ -70,7 +72,7 @@
 				<td>
 					<form th:action="@{/linebotdelete}" method="POST">
 						<input type="hidden" name="user_id" th:value="${result?.user_id}">
-						<input type="submit">
+						<input type="submit" value="削除">
 					</form>
 
 				</td>
