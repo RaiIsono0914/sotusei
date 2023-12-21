@@ -2,70 +2,64 @@
 <html>
 
 <head>
-	<meta charset="UTF-8">
-	<link rel="stylesheet" type="text/css" href="/css/sotusei.css"/>
-	
-	<title>ユーザー更新</title>
-	<style>
-		
-	</style>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
+    <title>ユーザー更新</title>
 </head>
 
 <body>
-	<header>
-		<h1>早退者一覧標</h1>
-		<p>早退者を確認できます</p>
-	</header>
-	<nav>
-		<ul>
-					<li><a th:href="@{/homee}">ホーム</a></li>
-					<li><a th:href="@{/linebot}">新しい生徒を登録</a></li>
-					<li><a th:href="@{/ppassword}">本日のパスワード</a></li>
-					<li><a th:href="@{/linebotupdata}">生徒情報の更新</a></li>
-					<li><a th:href="@{/attend_list}">出席情報</a></li>
-					<li><a th:href="@{/attendlog}">過去のログ</a></li>
-					<li><a th:href="@{/soutai}">早退理由</a></li>
-				</ul>
-	</nav>
 
-	<hr>
-	<main>
-		
-<!-- 検索フォーム -->
-		<form th:action="@{/soutai}" method="get">
-	<label for="searchName">ID:</label>
-			<input type="text" id="searchName" name="search" th:value="${searchName}" />
-			<button type="submit">検索</button>
+    <header>
+        <h1>早退者一覧標</h1>
+        <p>早退者を確認できます</p>
+    </header>
 
+    <nav>
+        <ul>
+            <li><a th:href="@{/homee}">ホーム</a></li>
+            <li><a th:href="@{/linebot}">学生情報</a></li>
+            <li><a th:href="@{/ppassword}">本日のパスワード</a></li>
+            <li><a th:href="@{/linebotupdata}">生徒情報の更新</a></li>
+            <li><a th:href="@{/attend_list}">出席情報</a></li>
+            <li><a th:href="@{/attendlog}">過去のログ</a></li>
+            <li><a th:href="@{/soutai}">早退理由</a></li>
+        </ul>
+    </nav>
 
+    <main>
+        <h2>申請検索</h2>
+        <!-- 検索フォーム -->
+        <form th:action="@{/soutai}" method="get">
+            <label for="searchName">ID:</label>
+            <input type="text" id="searchName" name="search" th:value="${searchName}" />
+            <input type="submit" value="Search">
+        </form>
 
-			<table border="1">
-				<thead>
-						<th>名前</th>
-						<th>理由</th>
-						<th>時間</th>
-						
+        <!-- 申請一覧 -->
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>名前</th>
+                    <th>理由</th>
+                    <th>時間</th>
+                    <th>申請日時</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${selectResult != null}" th:each="result : ${selectResult}">
+                    <td th:text="${result?.student_name}"></td>
+                    <td th:text="${result?.reason}"></td>
+                    <td th:text="${result?.time}"></td>
+                    <td th:text="${result?.day}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
 
-						<!-- 他のカラムも同様に修正 -->
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:if="${selectResult != null}" th:each="result : ${selectResult}">
-						<td th:text="${result?.student_name}">名前</td>
-						<td th:text="${result?.reason}"理由</td>
-						<td th:text="${result?.time}">時間</td>
-						
-						<!-- 他のカラムも同様に修正 -->
-					</tr>
-				</tbody>
-			</table>
+    <footer>
+        <p>&copy; News Site. All Rights Reserved.</p>
+    </footer>
 
-		</form>
-
-		<input type="button" onclick="history.back()" value="戻る">
-		<footer>
-			<p>&copy; News Site. All Rights Reserved.</p>
-		</footer>
 </body>
 
 </html>

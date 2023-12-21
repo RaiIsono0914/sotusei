@@ -23,7 +23,7 @@
 			<nav>
 				<ul>
 					<li><a th:href="@{/homee}">ホーム</a></li>
-					<li><a th:href="@{/linebot}">新しい生徒を登録</a></li>
+					<li><a th:href="@{/linebot}">学生情報</a></li>
 					<li><a th:href="@{/ppassword}">本日のパスワード</a></li>
 					<li><a th:href="@{/linebotupdata}">生徒情報の更新</a></li>
 					<li><a th:href="@{/attend_list}">出席情報</a></li>
@@ -32,12 +32,12 @@
 				</ul>
 			</nav>
 
-			<hr>
+
 			<main>
 				<h2 th:text="'ようこそ' + ${session.user_name} + 'さん'"></h2>
 
 
-				<p>Password: <span th:text="${pass}"></span></p>
+				<p>現在のパスワード<br><span th:text="${pass}"></span></p>
 
 
 				<a th:href="@{/sessionlogout}">ログアウトする。</a>

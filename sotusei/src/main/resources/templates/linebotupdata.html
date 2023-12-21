@@ -2,92 +2,83 @@
 <html>
 
 <head>
-<meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
-
-<title>ユーザー更新</title>
-<style>
-</style>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
+    <title>ユーザー更新</title>
 </head>
 
 <body>
-	<header>
-		<h1>生徒の情報を変更消去する</h1>
-		<p>情報を変更消去の可能です</p>
-	</header>
-	<nav>
-		<ul>
-			<li><a th:href="@{/homee}">ホーム</a></li>
-			<li><a th:href="@{/linebot}">新しい生徒を登録</a></li>
-			<li><a th:href="@{/ppassword}">本日のパスワード</a></li>
-			<li><a th:href="@{/linebotupdata}">生徒情報の更新</a></li>
-			<li><a th:href="@{/attend_list}">出席情報</a></li>
-			<li><a th:href="@{/attendlog}">過去のログ</a></li>
-			<li><a th:href="@{/soutai}">早退理由</a></li>
-		</ul>
-	</nav>
 
-	<hr>
-	<main>
-		<form th:action="@{/linebotupdata}" method="POST">
-			<h2>編集</h2>
-			<p>あなたのidを設定してください</p>
-			<p>
-				あなたのid：<input type="test" name="user_id"> <br>
-				あなたの学籍番号：<input type="text" name="user_number"> <br>
-				あなたの名前：<input type="text" name="user_name"> <br>
-				あなたの学年：<input type="text" name="user_grade"> <br>
-				あなたのクラス：<input type="text" name="user_classroom"> <br> <input
-					type="submit">
-			</p>
-		</form>
-	</main>
+    <header>
+        <h1>生徒の情報を変更・消去する</h1>
+        <p>情報を変更・消去することができます。</p>
+    </header>
 
-	<hr>
-	登録済データ一覧:
-	<br>
+    <nav>
+        <ul>
+            <li><a th:href="@{/homee}">ホーム</a></li>
+            <li><a th:href="@{/linebot}">学生情報</a></li>
+            <li><a th:href="@{/ppassword}">本日のパスワード</a></li>
+            <li><a th:href="@{/linebotupdata}">生徒情報の更新</a></li>
+            <li><a th:href="@{/attend_list}">出席情報</a></li>
+            <li><a th:href="@{/attendlog}">過去のログ</a></li>
+            <li><a th:href="@{/soutai}">早退理由</a></li>
+        </ul>
+    </nav>
 
-	<table border="1">
-		<thead>
-			<tr>
-				<th>LINE ID</th>
-				<th>学籍番号</th>
-				<th>名前</th>
-				<th>学年</th>
-				<th>クラス</th>
-				<th>PC番号</th>
-				<th>削除</th>
-				<!-- 他のカラムも同様に修正 -->
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:if="${selectResult != null}"
-				th:each="result : ${selectResult}">
-				<td th:text="${result?.user_id}">User ID</td>
-				<td th:text="${result?.user_number}">User ID</td>
-				<td th:text="${result?.user_name}">User Name</td>
-				<td th:text="${result?.user_grade}">User grade</td>
-				<td th:text="${result?.user_classroom}">User classroom</td>
-				<td th:text="${result?.user_pc}">User pc</td>
-				<td>
-					<form th:action="@{/linebotdelete}" method="POST">
-						<input type="hidden" name="user_id" th:value="${result?.user_id}">
-						<input type="submit" value="削除">
-					</form>
+    <main>
+        <form th:action="@{/linebotupdata}" method="POST">
+            <h2>編集</h2>
+            <p>あなたの情報を入力してください。</p>
+            <p>
+                あなたのID：<input type="text" name="user_id"><br>
+                あなたの学籍番号：<input type="text" name="user_number"><br>
+                あなたの名前：<input type="text" name="user_name"><br>
+                あなたの学年：<input type="text" name="user_grade"><br>
+                あなたのクラス：<input type="text" name="user_classroom"><br>
+                <input type="submit" value="更新">
+            </p>
+        </form>
 
-				</td>
+        <hr>
 
-				<!-- 他のカラムも同様に修正 -->
-			</tr>
-		</tbody>
-	</table>
+        <h2>登録済データ一覧</h2>
 
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>LINE ID</th>
+                    <th>学籍番号</th>
+                    <th>名前</th>
+                    <th>学年</th>
+                    <th>クラス</th>
+                    <th>PC番号</th>
+                    <th>削除</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${selectResult != null}" th:each="result : ${selectResult}">
+                    <td th:text="${result?.user_id}">User ID</td>
+                    <td th:text="${result?.user_number}">User Number</td>
+                    <td th:text="${result?.user_name}">User Name</td>
+                    <td th:text="${result?.user_grade}">User Grade</td>
+                    <td th:text="${result?.user_classroom}">User Classroom</td>
+                    <td th:text="${result?.user_pc}">User PC</td>
+                    <td>
+                        <form th:action="@{/linebotdelete}" method="POST">
+                            <input type="hidden" name="user_id" th:value="${result?.user_id}">
+                            <input type="submit" value="削除">
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
 
+    <footer>
+        <p>&copy; News Site. All Rights Reserved.</p>
+    </footer>
 
-	<input type="button" onclick="history.back()" value="戻る">
-	<footer>
-		<p>&copy; News Site. All Rights Reserved.</p>
-	</footer>
 </body>
 
 </html>

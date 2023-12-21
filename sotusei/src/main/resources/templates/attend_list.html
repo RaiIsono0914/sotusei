@@ -2,82 +2,75 @@
 <html>
 
 <head>
-	<meta charset="UTF-8">
-	<link rel="stylesheet" type="text/css" href="/css/sotusei.css"/>
-
-	<title>パスワード表示</title>
-	<style>
-
-	</style>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
+    <title>パスワード表示</title>
 </head>
-
 
 <body>
 
-	<header>
-		<h1>生徒の出席情報を閲覧する</h1>
-		<p>出席状況確認</p>
-	</header>
-	<nav>
-		<ul>
-					<li><a th:href="@{/homee}">ホーム</a></li>
-					<li><a th:href="@{/linebot}">新しい生徒を登録</a></li>
-					<li><a th:href="@{/ppassword}">本日のパスワード</a></li>
-					<li><a th:href="@{/linebotupdata}">生徒情報の更新</a></li>
-					<li><a th:href="@{/attend_list}">出席情報</a></li>
-					<li><a th:href="@{/attendlog}">過去のログ</a></li>
-					<li><a th:href="@{/soutai}">早退理由</a></li>
-				</ul>
-	</nav>
+    <header>
+        <h1>生徒の出席情報を閲覧する</h1>
+        <p>出席状況の確認</p>
+    </header>
 
-	<hr>
-	<h2>生徒検索</h2>
-	<!-- 検索フォーム -->
-	<form th:action="@{/attend_list}" method="get">
-		<label for="searchName">Name:</label>
-		<input type="text" id="searchName" name="search" th:value="${searchName}" />
-		<button type="submit">検索</button>
+    <nav>
+        <ul>
+            <li><a th:href="@{/homee}">ホーム</a></li>
+            <li><a th:href="@{/linebot}">学生情報</a></li>
+            <li><a th:href="@{/ppassword}">本日のパスワード</a></li>
+            <li><a th:href="@{/linebotupdata}">生徒情報の更新</a></li>
+            <li><a th:href="@{/attend_list}">出席情報</a></li>
+            <li><a th:href="@{/attendlog}">過去のログ</a></li>
+            <li><a th:href="@{/soutai}">早退理由</a></li>
+        </ul>
+    </nav>
 
+    <h2>生徒検索</h2>
+    <!-- 検索フォーム -->
+    <form th:action="@{/attend_list}" method="get">
+        <label for="searchName">Name:</label>
+        <input type="text" id="searchName" name="search" th:value="${searchName}" />
+        <input type="submit" value="Search">
+    </form>
 
-		<!-- 検索結果表示 -->
-		<table border="1">
-			<thead>
-				<tr>
-					<th>名前</th>
-					<th>学年</th>
-					<th>クラス</th>
-					<th>1限目</th>
-					<th>出席時間</th>
-					<th>2限目</th>
-					<th>出席時間</th>
-					<th>3限目</th>
-					<th>出席時間</th>
-				</tr>
-			</thead>
-			<tbody>
-				<!-- 結果リストの要素ごとにループ -->
-				<tr th:each="result : ${selectResult}">
-					<td th:text="${result['user_name']}"></td>
-					<td th:text="${result['user_grade']}"></td>
-					<td th:text="${result['user_classroom']}"></td>
-					<td th:text="${result['class1']}"></td>
-					<td th:text="${result['class1time']}"></td>
-					<td th:text="${result['class2']}"></td>
-					<td th:text="${result['class2time']}"></td>
-					<td th:text="${result['class3']}"></td>
-					<td th:text="${result['class3time']}"></td>
-				</tr>
-			</tbody>
-		</table>
-	</form>
-	<hr>
+    <!-- 検索結果表示 -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>名前</th>
+                <th>学年</th>
+                <th>クラス</th>
+                <th>1限目</th>
+                <th>出席時間</th>
+                <th>2限目</th>
+                <th>出席時間</th>
+                <th>3限目</th>
+                <th>出席時間</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 結果リストの要素ごとにループ -->
+            <tr th:each="result : ${selectResult}">
+                <td th:text="${result['user_name']}"></td>
+                <td th:text="${result['user_grade']}"></td>
+                <td th:text="${result['user_classroom']}"></td>
+                <td th:text="${result['class1']}"></td>
+                <td th:text="${result['class1time']}"></td>
+                <td th:text="${result['class2']}"></td>
+                <td th:text="${result['class2time']}"></td>
+                <td th:text="${result['class3']}"></td>
+                <td th:text="${result['class3time']}"></td>
+            </tr>
+        </tbody>
+    </table>
 
+    <hr>
 
+    <footer>
+        <p>&copy; News Site. All Rights Reserved.</p>
+    </footer>
 
-	<input type="button" onclick="history.back()" value="戻る">
-	<footer>
-		<p>&copy; News Site. All Rights Reserved.</p>
-	</footer>
 </body>
 
 </html>

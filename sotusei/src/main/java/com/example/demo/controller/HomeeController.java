@@ -51,7 +51,7 @@ public class HomeeController {
 		resultList = jdbcTemplate.queryForList(sql);
 
 		for (Map<String, Object> result : resultList) {
-			pass =result.toString();
+			pass =result.values().toArray()[0].toString();
 		}
 
 		System.out.println(pass);

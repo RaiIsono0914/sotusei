@@ -1,71 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 
 <head>
-<meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
-
-<title>ユーザー登録</title>
-<style>
-</style>
+    <meta charset="UTF-8">
+    <title>ユーザー登録</title>
+    <link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
 </head>
 
 <body>
 
+    <header>
+        <h1>学生情報</h1>
+        <p>全ての学生情報が閲覧できます</p>
+    </header>
 
-	<header>
-		<h1>新しい生徒を登録</h1>
-		<p>出席状況やPWの変更が可能です</p>
-	</header>
-	<nav>
-		<ul>
-			<li><a th:href="@{/homee}">ホーム</a></li>
-			<li><a th:href="@{/linebot}">新しい生徒を登録</a></li>
-			<li><a th:href="@{/ppassword}">本日のパスワード</a></li>
-			<li><a th:href="@{/linebotupdata}">生徒情報の更新</a></li>
-			<li><a th:href="@{/attend_list}">出席情報</a></li>
-			<li><a th:href="@{/attendlog}">過去のログ</a></li>
-			<li><a th:href="@{/soutai}">早退理由</a></li>
-		</ul>
-	</nav>
+    <nav>
+        <ul>
+            <li><a th:href="@{/homee}">ホーム</a></li>
+            <li><a th:href="@{/linebot}">学生情報</a></li>
+            <li><a th:href="@{/ppassword}">本日のパスワード</a></li>
+            <li><a th:href="@{/linebotupdata}">生徒情報の更新</a></li>
+            <li><a th:href="@{/attend_list}">出席情報</a></li>
+            <li><a th:href="@{/attendlog}">過去のログ</a></li>
+            <li><a th:href="@{/soutai}">早退理由</a></li>
+        </ul>
+    </nav>
 
-	<hr>
-	<main>
-		登録済データ一覧:<br>
-		<table border="1">
-			<thead>
-			<tr>
-				<th>LINE ID</th>
-				<th>学籍番号</th>
-				<th>名前</th>
-				<th>学年</th>
-				<th>クラス</th>
-				<th>PC番号</th>
-				<!-- 他のカラムも同様に修正 -->
-			</tr>
-		</thead>
-			<tbody>
-			<tr th:if="${selectResult != null}"
-				th:each="result : ${selectResult}">
-				<td th:text="${result?.user_id}">User ID</td>
-				<td th:text="${result?.user_number}">User Number</td>
-				<td th:text="${result?.user_name}">User Name</td>
-				<td th:text="${result?.user_grade}">User grade</td>
-				<td th:text="${result?.user_classroom}">User classroom</td>
-				<td th:text="${result?.user_pc}">User pc</td>
-				</tr>
-			</tbody>
-		</table>
+    <main>
+        <h2>登録済データ一覧</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>LINE ID</th>
+                    <th>学籍番号</th>
+                    <th>名前</th>
+                    <th>学年</th>
+                    <th>クラス</th>
+                    <th>PC番号</th>
+                    <!-- 他のカラムも同様に修正 -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${selectResult != null}" th:each="result : ${selectResult}">
+                    <td th:text="${result?.user_id}">User ID</td>
+                    <td th:text="${result?.user_number}">User Number</td>
+                    <td th:text="${result?.user_name}">User Name</td>
+                    <td th:text="${result?.user_grade}">User grade</td>
+                    <td th:text="${result?.user_classroom}">User classroom</td>
+                    <td th:text="${result?.user_pc}">User pc</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
 
-		<input type="button" onclick="history.back()" value="戻る">
-	</main>
+    <footer>
+        <p>&copy; News Site. All Rights Reserved.</p>
+    </footer>
 
-
-
-
-	<footer>
-		<p>&copy; News Site. All Rights Reserved.</p>
-	</footer>
 </body>
 
 </html>
