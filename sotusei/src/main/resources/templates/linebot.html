@@ -2,61 +2,173 @@
 <html lang="ja">
 
 <head>
-    <meta charset="UTF-8">
-    <title>ユーザー登録</title>
-    <link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
+<meta charset="UTF-8">
+<title>ユーザー登録</title>
+<link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
+<script>
+        function sortTable(n) {
+            let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.querySelector("table");
+            switching = true;
+            dir = "asc";
+
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+
+                    if (dir === "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount === 0 && dir === "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+
+            // 列ヘッダーの▲▼表示の更新
+            let headers = document.querySelectorAll("th");
+            for (let header of headers) {
+                header.innerHTML = header.innerHTML.replace(" ▲", "").replace(" ▼", "");
+            }
+            headers[n].innerHTML += dir === "asc" ? " ▲" : " ▼";
+        }
+
+        function filterTable() {
+            const gradeFilter = document.getElementById("gradeFilter").value;
+            const classFilter = document.getElementById("classFilter").value;
+
+            const table = document.querySelector("table");
+            const rows = table.querySelectorAll("tbody tr");
+
+            rows.forEach(row => {
+                const gradeCell = row.querySelector("td:nth-child(4)").textContent;
+                const classCell = row.querySelector("td:nth-child(5)").textContent;
+
+                if ((gradeFilter && gradeCell !== gradeFilter) || (classFilter && classCell !== classFilter)) {
+                    row.style.display = "none";
+                } else {
+                    row.style.display = "";
+                }
+            });
+        }
+    </script>
 </head>
 
 <body>
 
-    <header>
-        <h1>学生情報</h1>
-        <p>全ての学生情報が閲覧できます</p>
-    </header>
+	<header>
+		<h1>学生情報</h1>
+		<p>全ての学生情報が閲覧できます</p>
+	</header>
 
-    <nav>
-        <ul>
-            <li><a th:href="@{/homee}">ホーム</a></li>
-            <li><a th:href="@{/linebot}">学生情報</a></li>
-            <li><a th:href="@{/ppassword}">本日のパスワード</a></li>
-            <li><a th:href="@{/linebotupdata}">生徒情報の更新</a></li>
-            <li><a th:href="@{/attend_list}">出席情報</a></li>
-            <li><a th:href="@{/attendlog}">過去のログ</a></li>
-            <li><a th:href="@{/soutai}">早退理由</a></li>
-        </ul>
-    </nav>
+	<nav>
+		<ul>
+			<li><a th:href="@{/homee}">ホーム</a></li>
+			<li><a th:href="@{/ppassword}">本日のパスワード</a></li>
+			<li><a th:href="@{/attend_list}">本日の出席情報</a></li>
+			<li><a th:href="@{/linebot}">学生情報</a></li>
+			<li><a th:href="@{/linebotupdata}">学生情報の更新</a></li>
+			<li><a th:href="@{/attendlog}">過去の出席情報</a></li>
+			<li><a th:href="@{/soutai}">早退申請</a></li>
+		</ul>
+	</nav>
 
-    <main>
-        <h2>登録済データ一覧</h2>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>LINE ID</th>
-                    <th>学籍番号</th>
-                    <th>名前</th>
-                    <th>学年</th>
-                    <th>クラス</th>
-                    <th>PC番号</th>
-                    <!-- 他のカラムも同様に修正 -->
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:if="${selectResult != null}" th:each="result : ${selectResult}">
-                    <td th:text="${result?.user_id}">User ID</td>
-                    <td th:text="${result?.user_number}">User Number</td>
-                    <td th:text="${result?.user_name}">User Name</td>
-                    <td th:text="${result?.user_grade}">User grade</td>
-                    <td th:text="${result?.user_classroom}">User classroom</td>
-                    <td th:text="${result?.user_pc}">User pc</td>
-                </tr>
-            </tbody>
-        </table>
-    </main>
+	<main>
+		<h2>登録済データ一覧</h2>
+		<p>表頭をクリックすることで降順、昇順を切り替えることができます。</p>
 
-    <footer>
-        <p>&copy; News Site. All Rights Reserved.</p>
-    </footer>
+		<div>
+			<!-- 学年で絞込 -->
+			<select id="gradeFilter" onchange="filterTable()">
+				<option value="">学年で絞り込む</option>
+				<option value="1">1年生</option>
+				<option value="2">2年生</option>
+				<option value="3">3年生</option>
+				<option value="4">4年生</option>
+			</select>
+
+			<!-- クラスで絞込 -->
+			<select id="classFilter" onchange="filterTable()">
+				<option value="">クラスで絞り込む</option>
+				<option value="A">Aクラス</option>
+				<option value="B">Bクラス</option>
+				<option value="C">Cクラス</option>
+				<option value="D">Dクラス</option>
+				<option value="E">Eクラス</option>
+				<option value="F">Fクラス</option>
+				<option value="G">Gクラス</option>
+				<option value="H">Hクラス</option>
+				<option value="I">Iクラス</option>
+				<option value="J">Jクラス</option>
+				<option value="K">Kクラス</option>
+				<option value="L">Lクラス</option>
+				<option value="M">Mクラス</option>
+				<option value="N">Nクラス</option>
+				<option value="O">Oクラス</option>
+				<option value="P">Pクラス</option>
+				<option value="Q">Qクラス</option>
+				<option value="R">Rクラス</option>
+				<option value="S">Sクラス</option>
+				<option value="T">Tクラス</option>
+				<option value="U">Uクラス</option>
+				<option value="V">Vクラス</option>
+				<option value="W">Wクラス</option>
+				<option value="X">Xクラス</option>
+				<option value="Y">Yクラス</option>
+				<option value="Z">Zクラス</option>
+			</select>
+		</div>
+
+		<table border="1">
+			<thead>
+				<tr>
+					<th onclick="sortTable(0)">LINE ID</th>
+					<th onclick="sortTable(1)">学籍番号</th>
+					<th onclick="sortTable(2)">名前</th>
+					<th onclick="sortTable(3)">学年</th>
+					<th onclick="sortTable(4)">クラス</th>
+					<th onclick="sortTable(5)">PC番号</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${selectResult != null}"
+					th:each="result : ${selectResult}">
+					<td th:text="${result?.user_id}">User ID</td>
+					<td th:text="${result?.user_number}">User Number</td>
+					<td th:text="${result?.user_name}">User Name</td>
+					<td th:text="${result?.user_grade}">User grade</td>
+					<td th:text="${result?.user_classroom}">User classroom</td>
+					<td th:text="${result?.user_pc}">User pc</td>
+				</tr>
+			</tbody>
+		</table>
+	</main>
+
+	<footer>
+		<p>&copy; News Site. All Rights Reserved.</p>
+	</footer>
 
 </body>
 
 </html>
+
