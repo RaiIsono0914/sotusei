@@ -43,6 +43,7 @@
                     <th>理由</th>
                     <th>時間</th>
                     <th>申請日時</th>
+                    <th>認否</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,6 +52,7 @@
                     <td th:text="${result?.reason}"></td>
                     <td th:text="${result?.time}"></td>
                     <td th:text="${result?.day}"></td>
+                    <td th:text="${result?.judge}"></td>
                 </tr>
             </tbody>
         </table>

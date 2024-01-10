@@ -155,6 +155,23 @@ td:last-child, th:last-child {
 	border-right: 1px solid #ddd;
 }
 
+/* Dropdown Menu */
+select {
+    padding: 10px 15px;
+    font-size: 16px;
+    color: #333;
+    background-color: #f9f9f9;
+    border: 2px solid #ccc;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+
 /* Footer */
 footer {
 	clear: both;

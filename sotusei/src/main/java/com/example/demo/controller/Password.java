@@ -26,9 +26,10 @@ public class Password {
             int first = Integer.parseInt(generatedPassword);
             int second = Integer.parseInt(generatedPassword);
             int third = Integer.parseInt(generatedPassword);
+            int fourth = Integer.parseInt(generatedPassword);
 
             // ここでデータベースにパスワードを保存するなどの処理を実行できます
-            jdbcTemplate.update("INSERT INTO password (first, second, third) VALUES (?, ?, ?)", first, second, third);
+            jdbcTemplate.update("INSERT INTO password (first, second, third,fourth) VALUES (?, ?, ?,?)", first, second, third,fourth);
         }
     }
 

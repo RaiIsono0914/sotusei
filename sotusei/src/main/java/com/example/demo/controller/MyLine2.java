@@ -215,15 +215,18 @@ public class MyLine2 {
 
 				int timeint = Integer.parseInt(time);
 
-				if (timeint <= 1015) {//一限と二限と三限
+				if (timeint <= 1015) {//一限と二限と三限と四限
 					jdbcTemplate.update(
-							"UPDATE user SET class1 = 5, class2 = 5, class3 = 5 WHERE user_id = ?", id);
-				} else if (timeint <= 1200) {//三限と二限
+							"UPDATE user SET class1 = 5, class2 = 5, class3 = 5, class4 = 5 WHERE user_id = ?", id);
+				} else if (timeint <= 1200) {//二限と三限と四限
 					jdbcTemplate.update(
-							"UPDATE user SET class2 = 5, class3 = 5 WHERE user_id = ?", id);
-				} else if (timeint >= 1201) {//三限
+							"UPDATE user SET class2 = 5, class3 = 5, class4 = 5 WHERE user_id = ?", id);
+				} else if (timeint <= 1430) {//三限と四限
 					jdbcTemplate.update(
-							"UPDATE user SET class3 = 5 WHERE user_id = ?", id);
+							"UPDATE user SET class3 = 5, class4 = 5 WHERE user_id = ?", id);
+				}else if (timeint >= 1431) {//四限
+					jdbcTemplate.update(
+							"UPDATE user SET class4 = 5 WHERE user_id = ?", id);
 				}
 
 			} else if ("soutai_sinsa".equals(userStateService.getUserState(userId)) && "不許可".equals(replyText)) {
@@ -354,6 +357,34 @@ public class MyLine2 {
 			}
 		}
 		System.out.println("三限の遅刻者を教員に通知しました");
+	}
+
+	@Scheduled(cron = "0 36 15 * * MON-FRI")
+	public void class4tikoku() {
+
+		List<Map<String, Object>> resultList;
+		List<Map<String, Object>> teacherList;
+
+		resultList = jdbcTemplate.queryForList("SELECT user_name FROM user WHERE class4=4");
+		teacherList = jdbcTemplate.queryForList("SELECT user_id FROM teacher");
+
+		String teacher = "";
+		String userName = "";
+		for (Map<String, Object> teacherMap : teacherList) {
+			// nameListの要素を取り出して処理
+			teacher = (String) teacherMap.get("user_id");
+			System.out.println(teacher);
+			for (Map<String, Object> resultMap : resultList) {
+				userName = userName + (String) resultMap.get("user_name") + "さん、";
+				System.out.println(userName);
+			}
+			if (userName != "") {
+				pushMessage(teacher, userName + "が遅刻しています。");
+			} else {
+				pushMessage(teacher, "遅刻者はいません。");
+			}
+		}
+		System.out.println("四限の遅刻者を教員に通知しました");
 	}
 
 	public static boolean isUppercaseLetter(String input) {

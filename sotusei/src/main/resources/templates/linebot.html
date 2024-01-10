@@ -95,49 +95,18 @@
 
 	<main>
 		<h2>登録済データ一覧</h2>
-		<p>表頭をクリックすることで降順、昇順を切り替えることができます。</p>
 
-		<div>
-			<!-- 学年で絞込 -->
-			<select id="gradeFilter" onchange="filterTable()">
-				<option value="">学年で絞り込む</option>
-				<option value="1">1年生</option>
-				<option value="2">2年生</option>
-				<option value="3">3年生</option>
-				<option value="4">4年生</option>
+		<form th:action="@{/linebot}" method="get">
+
+			<select id="searchKinds" name="kinds">
+				<option value="classroom">クラス</option>
+				<option value="grade">学年</option>
+				<option value="name">名前</option>
 			</select>
 
-			<!-- クラスで絞込 -->
-			<select id="classFilter" onchange="filterTable()">
-				<option value="">クラスで絞り込む</option>
-				<option value="A">Aクラス</option>
-				<option value="B">Bクラス</option>
-				<option value="C">Cクラス</option>
-				<option value="D">Dクラス</option>
-				<option value="E">Eクラス</option>
-				<option value="F">Fクラス</option>
-				<option value="G">Gクラス</option>
-				<option value="H">Hクラス</option>
-				<option value="I">Iクラス</option>
-				<option value="J">Jクラス</option>
-				<option value="K">Kクラス</option>
-				<option value="L">Lクラス</option>
-				<option value="M">Mクラス</option>
-				<option value="N">Nクラス</option>
-				<option value="O">Oクラス</option>
-				<option value="P">Pクラス</option>
-				<option value="Q">Qクラス</option>
-				<option value="R">Rクラス</option>
-				<option value="S">Sクラス</option>
-				<option value="T">Tクラス</option>
-				<option value="U">Uクラス</option>
-				<option value="V">Vクラス</option>
-				<option value="W">Wクラス</option>
-				<option value="X">Xクラス</option>
-				<option value="Y">Yクラス</option>
-				<option value="Z">Zクラス</option>
-			</select>
-		</div>
+			 <input type="text" id="searchValue" name="search"
+				th:value="${searchValue}" /> <input type="submit" value="Search">
+		</form>
 
 		<table border="1">
 			<thead>

@@ -30,10 +30,17 @@
 		<h2>生徒検索</h2>
 		<!-- 検索フォーム -->
 		<form th:action="@{/attend_list}" method="get">
-			<label for="searchName">Name:</label> <input type="text"
-				id="searchName" name="search" th:value="${searchName}" /> <input
-				type="submit" value="Search">
+
+			<select id="searchKinds" name="kinds">
+				<option value="classroom">クラス</option>
+				<option value="grade">学年</option>
+				<option value="name">名前</option>
+			</select>
+
+			 <input type="text" id="searchValue" name="search"
+				th:value="${searchValue}" /> <input type="submit" value="Search">
 		</form>
+
 		<!-- 検索結果表示 -->
 		<table border="1">
 			<thead>
@@ -46,6 +53,8 @@
 					<th>2限目</th>
 					<th>出席時間</th>
 					<th>3限目</th>
+					<th>出席時間</th>
+					<th>4限目</th>
 					<th>出席時間</th>
 				</tr>
 			</thead>
@@ -61,6 +70,8 @@
 					<td th:text="${result['class2time']}"></td>
 					<td th:text="${result['class3']}"></td>
 					<td th:text="${result['class3time']}"></td>
+					<td th:text="${result['class4']}"></td>
+					<td th:text="${result['class4time']}"></td>
 				</tr>
 			</tbody>
 		</table>

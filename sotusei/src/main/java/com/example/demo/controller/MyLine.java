@@ -132,19 +132,10 @@ public class MyLine {
 
 				////////////////////////////////////////////////////////////出席////////////////////////////////////////////////
 			} else if ("出席".equals(replyText)) {
-				LocalTime currentTime = LocalTime.now();//時間を取得
-				int hour = currentTime.getHour();
 
-				if (hour == 9 || hour == 10 || hour == 11 || hour == 13 || hour == 14) {//時間
-
-					String replyMessageText = "パスワードを半角で入力してください";
-					replyMessage(replyToken, replyMessageText);
-					userStateService.setUserState(userId, "wait_pass");
-				} else {
-					String replyMessageText = "時間外です。";
-					replyMessage(replyToken, replyMessageText);
-					userStateService.removeUserState(userId);
-				}
+				String replyMessageText = "パスワードを半角で入力してください";
+				replyMessage(replyToken, replyMessageText);
+				userStateService.setUserState(userId, "wait_pass");
 
 			} else if ("wait_pass".equals(userStateService.getUserState(userId))) {
 
@@ -154,8 +145,10 @@ public class MyLine {
 
 				LocalTime currentTime = LocalTime.now();//時間を取得
 				int hour = currentTime.getHour();
+				int minute = currentTime.getMinute();
 
-				System.out.println(hour + "時");
+				String stringswitchtime = Integer.toString(hour) + Integer.toString(minute);
+				int switchtime = Integer.parseInt(stringswitchtime);
 
 				//初期化
 				List<Map<String, Object>> resultList;
@@ -165,9 +158,8 @@ public class MyLine {
 				String attend = null;
 				//
 
-				switch (hour) {//時間ごとに出席をとる
-				//////////////////////１限//////////////////////////////////////////////////////////////////////
-				case 9, 10:
+				/////////////////////////一限/////////////////////////
+				if (switchtime >= 900 && switchtime < 1100) {
 					System.out.println("case1");
 					resultList = jdbcTemplate.queryForList("select first FROM password");
 					Map<String, Object> firstRow = resultList.get(0);
@@ -222,9 +214,9 @@ public class MyLine {
 						userStateService.removeUserState(userId);
 					}
 
-					break;
+				}
 				//////////////////////２限//////////////////////////////////////////////////////////////////////
-				case 11:
+				else if (switchtime >= 1100 && switchtime < 1245) {
 					System.out.println("case2");
 					resultList = jdbcTemplate.queryForList("select second FROM password");
 					Map<String, Object> secondRow = resultList.get(0);
@@ -276,12 +268,10 @@ public class MyLine {
 						String replyMessageText = "パスワードが違います。最初からやり直してください。";
 						replyMessage(replyToken, replyMessageText);
 						userStateService.removeUserState(userId);
+
 					}
-
-					break;
-
-				//////////////////////３限//////////////////////////////////////////////////////////////////////
-				case 13, 14:
+					//////////////////////３限//////////////////////////////////////////////////////////////////////
+				} else if (switchtime >= 1300 && switchtime < 1515) {
 					System.out.println("case3");//確認
 
 					//３限のパスワード取得
@@ -347,8 +337,73 @@ public class MyLine {
 						userStateService.removeUserState(userId);
 					}
 
-					break;
-				default:
+					//////////////////////４限//////////////////////////////////////////////////////////////////////
+				} else if (switchtime >= 1515 && switchtime < 1700) {
+					System.out.println("case4");//確認
+
+					//４限のパスワード取得
+					resultList = jdbcTemplate.queryForList("select fourth FROM password");
+					Map<String, Object> thirdRow = resultList.get(0);
+					dbpassObject = thirdRow.get("fourth");
+					dbpass = dbpassObject.toString();
+					//
+
+					System.out.println(dbpass);//確認
+					System.out.println(password);//確認
+
+					System.out.println(attend);//確認
+
+					if (dbpass.equals(password)) {//パスワード正解
+						resultList = jdbcTemplate.queryForList("select class4 FROM user where user_id = ?", userId);
+						Map<String, Object> firstRow2 = resultList.get(0);
+						attendObject = firstRow2.get("class4");
+						attend = attendObject.toString();
+
+						currentTime = LocalTime.now();//時間を取得するためのやつ
+						hour = currentTime.getHour();//時を取得
+						int min = currentTime.getMinute();//分を取得
+
+						String time_hour = Integer.toString(hour);
+						String time_min = Integer.toString(min);
+						String time = time_hour + time_min;
+
+						if (attend.equals("0")) {//出席状況が未入力の場合
+
+							//出席をDBに送信
+							System.out.println(userId);
+							jdbcTemplate.update("UPDATE user SET class4 = ?,class4time WHERE user_id = ?;", 1, time,
+									userId);
+
+							System.out.println("passok");
+							String replyMessageText = "出席出来ました。";
+							replyMessage(replyToken, replyMessageText);
+							userStateService.removeUserState(userId);//ユーザーの状況リセット
+						} else if (attend.equals("4")) {
+							jdbcTemplate.update("UPDATE user SET class4 = ?,class4time WHERE user_id = ?;", 2, time,
+									userId);
+
+							System.out.println("passok");
+							String replyMessageText = "遅刻です。急ぎましょう。";
+							replyMessage(replyToken, replyMessageText);
+							userStateService.removeUserState(userId);
+
+						} else {//出席状況が入力済みの場合（遅刻等）
+							String replyMessageText = "既に出席情報が入力されています。";
+							replyMessage(replyToken, replyMessageText);
+							userStateService.removeUserState(userId);
+						}
+					} else {//パスワード間違い
+
+						System.out.println("passNg");
+						String replyMessageText = "パスワードが違います。最初からやり直してください。";
+						replyMessage(replyToken, replyMessageText);
+						userStateService.removeUserState(userId);
+					}
+
+				} else {
+					String replyMessageText = "時間外です。";
+					replyMessage(replyToken, replyMessageText);
+					userStateService.removeUserState(userId);
 				}
 
 				/////////////////////////欠席////////////////////////////////////////////////////

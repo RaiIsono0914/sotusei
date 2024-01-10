@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LinebotUpdata {
@@ -18,14 +19,27 @@ public class LinebotUpdata {
 	JdbcTemplate jdbcTemplate;
 
 	@RequestMapping(path = "/linebotupdata", method = RequestMethod.GET)
-	public String tenthGet(Model model) {
+	public String tenthGet(@RequestParam(name = "search", required = false) String searchValue, @RequestParam(name = "kinds", required = false) String searchKinds,
+			Model model) {
 
-		//SELECT文の結果をしまうためのリスト
-		List<Map<String, Object>> resultList;
+		// SELECT文の結果をしまうためのリスト
+		List<Map<String, Object>> resultList = null;
 
-		//SELECT文の実行
-		resultList = jdbcTemplate.queryForList("select * from user");
-
+		// 検索条件が指定されている場合は、名前を含むデータを検索
+		if (searchValue != null && !searchValue.isEmpty()) {
+			if ("name".equals(searchKinds)) {
+				resultList = jdbcTemplate.queryForList("select * from user where user_name like ?",
+						"%" + searchValue + "%");
+			} else if ("grade".equals(searchKinds)) {
+				resultList = jdbcTemplate.queryForList("select * from user where user_grade like ?",
+						"%" + searchValue + "%");
+			} else if ("classroom".equals(searchKinds)) {
+				resultList = jdbcTemplate.queryForList("select * from user where user_classroom like ?",
+						"%" + searchValue + "%");
+			}
+		} else {
+			resultList = jdbcTemplate.queryForList("select * from user");
+		}
 		//実行結果をmodelにしまってHTMLで出せるようにする。
 		model.addAttribute("selectResult", resultList);
 
