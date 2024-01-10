@@ -40,8 +40,10 @@ public class HomeeController {
 			sql = "select first from password";
 		} else if (inttime <= 1245) {
 			sql = "select second from password";
-		} else {
+		} else if (inttime <= 1515) {
 			sql = "select third from password";
+		}else {
+			sql = "select fourth from password";
 		}
 
 		//SELECT文の結果をしまうためのリスト

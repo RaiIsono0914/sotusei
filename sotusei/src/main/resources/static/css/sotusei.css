@@ -59,7 +59,7 @@ nav ul li {
 	background: #367281;
 	list-style-type: none;
 	float: left;
-	width: calc(100%/ 7);
+	width: calc(100%/ 8);
 	text-align: center;
 	line-height: 40px;
 	color: #df9;
@@ -124,35 +124,35 @@ form p input[type="text"] {
 
 /* Table Styling */
 table {
-	width: 100%;
-	border-collapse: collapse;
-	font-family: Arial, sans-serif;
-	margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd; /* 縦線を追加 */
+    border-top: 1px solid #ddd;
 }
 
 th {
-	background-color: #f2f2f2;
-	text-align: left;
-	padding: 8px;
-	border-bottom: 1px solid #ddd;
-}
-
-td {
-	padding: 8px;
-	text-align: left;
-	border-bottom: 1px solid #ddd;
+    background-color: #f2f2f2;
 }
 
 tr:nth-child(even) {
-	background-color: #f9f9f9;
+    background-color: #f9f9f9;
 }
 
 td:first-child, th:first-child {
-	border-left: 1px solid #ddd;
+    border-left: 1px solid #ddd;
 }
 
+/* 以下の部分は省略していません */
 td:last-child, th:last-child {
-	border-right: 1px solid #ddd;
+    border-right: 1px solid #ddd; /* これで表の右端にも縦線を追加 */
 }
 
 /* Dropdown Menu */
@@ -171,6 +171,20 @@ select:focus {
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
+
+input[type="checkbox"] {
+    width: 100%;  /* 任意の幅 */
+    height: 100%; /* 任意の高さ */
+    vertical-align: middle; /* チェックボックスをセルの中央に配置 */
+}
+
+/* Label styling */
+label {
+    display: inline-block;
+    width: 100%; /* テーブルセルの幅に合わせる */
+    height: 100%; /* テーブルセルの高さに合わせる */
+    line-height: inherit; /* テーブルセルの高さに合わせる */
+}
 
 /* Footer */
 footer {

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
+	<title>時間割管理</title>
+
+</head>
+
+<body>
+
+	<header>
+		<h1>時間割管理</h1>
+		<p>時間割管理を管理できます</p>
+	</header>
+
+	<nav>
+		<ul>
+			<li><a th:href="@{/homee}">ホーム</a></li>
+			<li><a th:href="@{/ppassword}">本日のパスワード</a></li>
+			<li><a th:href="@{/attend_list}">本日の出席情報</a></li>
+			<li><a th:href="@{/linebot}">学生情報</a></li>
+			<li><a th:href="@{/linebotupdata}">学生情報の更新</a></li>
+			<li><a th:href="@{/attendlog}">過去の出席情報</a></li>
+			<li><a th:href="@{/soutai}">早退申請</a></li>
+			<li><a th:href="@{/classroom}">時間割管理</a></li>
+		</ul>
+	</nav>
+
+	<main>
+		<p>
+		<h2>時間割変更</h2>
+		<h3>授業がない時間のみチェックを入れてください</h3>
+		</p>
+		<!-- 変更フォーム -->
+		<form th:action="@{/classroom}" method="get">
+			<label for="searchName">学年:</label>
+			<input type="text" id="searchName" name="search" th:value="${searchName}" />
+			<label for="searchName">クラス:</label>
+			<input type="text" id="searchName" name="search" th:value="${searchName}" />
+			<input type="submit" value="確定">
+
+			<!-- 月曜日から金曜日のヘッダー -->
+			<table>
+				<tr>
+					<th></th>
+					<th>月</th>
+					<th>火</th>
+					<th>水</th>
+					<th>木</th>
+					<th>金</th>
+				</tr>
+				<tr>
+					<td>1限</td>
+					<td><label><input type="checkbox" name="monday1" value="1"></label></td>
+					<td><label><input type="checkbox" name="tuesday1" value="1"></label></td>
+					<td><label><input type="checkbox" name="wednesday1" value="1"></label></td>
+					<td><label><input type="checkbox" name="thursday1" value="1"></label></td>
+					<td><label><input type="checkbox" name="friday1" value="1"></label></td>
+				</tr>
+				<tr>
+					<td>2限</td>
+					<td><label><input type="checkbox" name="monday2" value="2"></label></td>
+					<td><label><input type="checkbox" name="tuesday2" value="2"></label></td>
+					<td><label><input type="checkbox" name="wednesday2" value="2"></label></td>
+					<td><label><input type="checkbox" name="thursday2" value="2"></label></td>
+					<td><label><input type="checkbox" name="friday2" value="2"></label></td>
+				</tr>
+				<tr>
+					<td>3限</td>
+					<td><label><input type="checkbox" name="monday3" value="3"></label></td>
+					<td><label><input type="checkbox" name="tuesday3" value="3"></label></td>
+					<td><label><input type="checkbox" name="wednesday3" value="3"></label></td>
+					<td><label><input type="checkbox" name="thursday3" value="3"></label></td>
+					<td><label><input type="checkbox" name="friday3" value="3"></label></td>
+				</tr>
+				<tr>
+					<td>4限</td>
+					<td><label><input type="checkbox" name="monday4" value="4"></label></td>
+					<td><label><input type="checkbox" name="tuesday4" value="4"></label></td>
+					<td><label><input type="checkbox" name="wednesday4" value="4"></label></td>
+					<td><label><input type="checkbox" name="thursday4" value="4"></label></td>
+					<td><label><input type="checkbox" name="friday4" value="4"></label></td>
+				</tr>
+
+			</table>
+		</form>
+
+		<!-- 申請一覧 -->
+	</main>
+
+	<footer>
+		<p>&copy; News Site. All Rights Reserved.</p>
+	</footer>
+
+</body>
+
+</html>

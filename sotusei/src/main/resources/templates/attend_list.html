@@ -2,9 +2,9 @@
 <html>
 
 <head>
-<meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
-<title>パスワード表示</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
+	<title>パスワード表示</title>
 
 </head>
 
@@ -24,6 +24,7 @@
 			<li><a th:href="@{/linebotupdata}">学生情報の更新</a></li>
 			<li><a th:href="@{/attendlog}">過去の出席情報</a></li>
 			<li><a th:href="@{/soutai}">早退申請</a></li>
+			<li><a th:href="@{/classroom}">時間割管理</a></li>
 		</ul>
 	</nav>
 	<main>
@@ -32,13 +33,13 @@
 		<form th:action="@{/attend_list}" method="get">
 
 			<select id="searchKinds" name="kinds">
-				<option value="classroom">クラス</option>
 				<option value="grade">学年</option>
+				<option value="classroom">クラス</option>
 				<option value="name">名前</option>
 			</select>
 
-			 <input type="text" id="searchValue" name="search"
-				th:value="${searchValue}" /> <input type="submit" value="Search">
+			<input type="text" id="searchValue" name="search" th:value="${searchValue}" /> <input type="submit"
+				value="Search">
 		</form>
 
 		<!-- 検索結果表示 -->
