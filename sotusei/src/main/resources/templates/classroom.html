@@ -31,63 +31,65 @@
 	<main>
 		<p>
 		<h2>時間割変更</h2>
+		<h3>セルをクリックするとチェックを入れることができます</h3>
 		<h3>授業がない時間のみチェックを入れてください</h3>
 		</p>
 		<!-- 変更フォーム -->
 		<form th:action="@{/classroom}" method="post">
-			<label for="grade">学年:</label>
-			<input type="text" name="grade"/>
-			<label for="classroom">クラス:</label>
-			<input type="text" name="classroom"/>
-			<input type="submit" value="確定">
+			<label for="grade">学年(半角):
+				<input type="text" name="grade" />
+				<label for="classroom">クラス(半角大文字):
+					<input type="text" name="classroom" />
+					<input type="submit" value="確定">
 
-			<!-- 月曜日から金曜日のヘッダー -->
-			<table>
-				<tr>
-					<th></th>
-					<th>月</th>
-					<th>火</th>
-					<th>水</th>
-					<th>木</th>
-					<th>金</th>
-				</tr>
-				<tr>
-					<td>1限</td>
-					<td><label><input type="checkbox" name="monday1" value="1"></label></td>
-					<td><label><input type="checkbox" name="tuesday1" value="1"></label></td>
-					<td><label><input type="checkbox" name="wednesday1" value="1"></label></td>
-					<td><label><input type="checkbox" name="thursday1" value="1"></label></td>
-					<td><label><input type="checkbox" name="friday1" value="1"></label></td>
-				</tr>
-				<tr>
-					<td>2限</td>
-					<td><label><input type="checkbox" name="monday2" value="1"></label></td>
-					<td><label><input type="checkbox" name="tuesday2" value="1"></label></td>
-					<td><label><input type="checkbox" name="wednesday2" value="1"></label></td>
-					<td><label><input type="checkbox" name="thursday2" value="1"></label></td>
-					<td><label><input type="checkbox" name="friday2" value="1"></label></td>
-				</tr>
-				<tr>
-					<td>3限</td>
-					<td><label><input type="checkbox" name="monday3" value="1"></label></td>
-					<td><label><input type="checkbox" name="tuesday3" value="1"></label></td>
-					<td><label><input type="checkbox" name="wednesday3" value="1"></label></td>
-					<td><label><input type="checkbox" name="thursday3" value="1"></label></td>
-					<td><label><input type="checkbox" name="friday3" value="1"></label></td>
-				</tr>
-				<tr>
-					<td>4限</td>
-					<td><label><input type="checkbox" name="monday4" value="1"></label></td>
-					<td><label><input type="checkbox" name="tuesday4" value="1"></label></td>
-					<td><label><input type="checkbox" name="wednesday4" value="1"></label></td>
-					<td><label><input type="checkbox" name="thursday4" value="1"></label></td>
-					<td><label><input type="checkbox" name="friday4" value="1"></label></td>
-				</tr>
+					<!-- 月曜日から金曜日のヘッダー -->
+					<table>
+						<!-- 月曜日から金曜日のヘッダー -->
+						<tr>
+							<th></th>
+							<th>月</th>
+							<th>火</th>
+							<th>水</th>
+							<th>木</th>
+							<th>金</th>
+						</tr>
+						<tr>
+							<td>1限</td>
+							<td class="checkboxtd"><input type="checkbox" name="monday1" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="tuesday1" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="wednesday1" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="thursday1" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="friday1" value="1"></td>
+						</tr>
+						<tr>
+							<td>2限</td>
+							<td class="checkboxtd"><input type="checkbox" name="monday2" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="tuesday2" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="wednesday2" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="thursday2" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="friday2" value="1"></td>
+						</tr>
+						<tr>
+							<td>3限</td>
+							<td class="checkboxtd"><input type="checkbox" name="monday3" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="tuesday3" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="wednesday3" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="thursday3" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="friday3" value="1"></td>
+						</tr>
+						<tr>
+							<td>4限</td>
+							<td class="checkboxtd"><input type="checkbox" name="monday4" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="tuesday4" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="wednesday4" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="thursday4" value="1"></td>
+							<td class="checkboxtd"><input type="checkbox" name="friday4" value="1"></td>
+						</tr>
 
-			</table>
+
+					</table>
 		</form>
 
-		<!-- 申請一覧 -->
 	</main>
 
 	<footer>

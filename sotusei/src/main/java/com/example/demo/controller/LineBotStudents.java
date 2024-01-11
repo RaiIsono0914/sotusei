@@ -22,7 +22,7 @@ import com.example.demo.bean.LineData;
 import com.example.demo.service.UserStateService;
 
 @RestController
-public class MyLine {
+public class LineBotStudents {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -446,7 +446,7 @@ public class MyLine {
 						"INSERT INTO soutai ( teacher_id ,student_name ,reason,judge,student_id,time,user_grade,user_classroom) VALUES (?,?,?,0,?,?,?,?);",
 						teacherId, name, replyText, userId, time,grade,classroom);
 
-				MyLine2 myline2 = new MyLine2();
+				LineBotTeachers myline2 = new LineBotTeachers();
 				myline2.soutai(teacherId, name);
 
 				String replyMessageText = "早退申請が送信されました";
@@ -479,10 +479,10 @@ public class MyLine {
 				//////////////////////////////////////////////////////////////////
 			} else if ("退出".equals(replyText)) {
 
-				String replyMessageText = "退出時間を記録します。よろしいですか？\nよろしければ「はい」\nキャンセルする場合は「キャンセル」\nを入力してください。";
+				String replyMessageText = "退出時間を記録します。よろしいですか？\nよろしければ「はい」\nキャンセルする場合は「キャンセル」\nを入力してください。\n※退出中に復籍以外の操作をすると復籍時間が記録されなくなります。";
 				replyMessage(replyToken, replyMessageText);
-				userStateService.setUserState(userId, "taisyutu");
-			} else if ("taisyutu".equals(userStateService.getUserState(userId)) && "はい".equals(replyText)) {
+				userStateService.setUserState(userId, "taisyutukakunin");
+			} else if ("taisyutukakunin".equals(userStateService.getUserState(userId)) && "はい".equals(replyText)) {
 				LocalTime currentTime = LocalTime.now();//時間を取得
 				int hour = currentTime.getHour();
 				int min = currentTime.getMinute();
@@ -494,8 +494,8 @@ public class MyLine {
 				jdbcTemplate.update("UPDATE user SET Exittime  = ? WHERE user_id = ?;", time,userId);
 				String replyMessageText = "記録しました。授業に戻る場合は「復席」と入力してください";
 				replyMessage(replyToken, replyMessageText);
-				userStateService.removeUserState(userId);
-			} else if ("復籍".equals(replyText)) {
+				userStateService.setUserState(userId, "taisyutu");
+			} else if ("復籍".equals(replyText)&&"taisyutu".equals(userStateService.getUserState(userId))) {
 
 				String replyMessageText = "復籍時間を記録します。よろしいですか？\nよろしければ「はい」\nキャンセルする場合は「キャンセル」\nを入力してください。";
 				replyMessage(replyToken, replyMessageText);

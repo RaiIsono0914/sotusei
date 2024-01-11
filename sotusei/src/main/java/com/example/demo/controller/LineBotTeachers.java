@@ -22,7 +22,7 @@ import com.example.demo.bean.LineData;
 import com.example.demo.service.UserStateService;
 
 @RestController
-public class MyLine2 {
+public class LineBotTeachers {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -207,7 +207,7 @@ public class MyLine2 {
 							+ "\n-------早退理由-------";
 				}
 
-				MyLine myline = new MyLine();
+				LineBotStudents myline = new LineBotStudents();
 				myline.soutai_judge(message, id);
 
 				jdbcTemplate.update(
@@ -252,7 +252,7 @@ public class MyLine2 {
 							+ "\n-------早退理由-------";
 				}
 
-				MyLine myline = new MyLine();
+				LineBotStudents myline = new LineBotStudents();
 				myline.soutai_judge(message, id);
 
 				jdbcTemplate.update(
