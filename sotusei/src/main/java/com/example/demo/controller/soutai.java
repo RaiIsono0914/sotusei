@@ -18,24 +18,65 @@ public class soutai {
 	JdbcTemplate jdbcTemplate;
 
 	@RequestMapping(path = "/soutai", method = RequestMethod.GET)
-	public String eidht(@RequestParam(name = "search", required = false) String searchName, Model model) {
+	public String eidht(@RequestParam(name = "search", required = false) String searchValue, @RequestParam(name = "kinds", required = false) String searchKinds,
+			Model model) {
 		// SELECT文の結果をしまうためのリスト
-		List<Map<String, Object>> resultList;
+		// SELECT文の結果をしまうためのリスト
+				List<Map<String, Object>> resultList = null;
 
-		// 検索条件が指定されている場合は、名前を含むデータを検索
-		if (searchName != null && !searchName.isEmpty()) {
-			resultList = jdbcTemplate.queryForList("select * from soutai where student_name like ?",
-					"%" + searchName + "%");
-		} else {
-			// 検索条件が指定されていない場合は、全データを取得
-			resultList = jdbcTemplate.queryForList("select * from soutai");
+				// 検索条件が指定されている場合は、名前を含むデータを検索
+				if (searchValue != null && !searchValue.isEmpty()) {
+					if ("name".equals(searchKinds)) {
+						resultList = jdbcTemplate.queryForList("select * from soutai where student_name like ?",
+								"%" + searchValue + "%");
+					} else if ("grade".equals(searchKinds)) {
+						resultList = jdbcTemplate.queryForList("select * from soutai where user_grade like ?",
+								"%" + searchValue + "%");
+					} else if ("classroom".equals(searchKinds)) {
+						resultList = jdbcTemplate.queryForList("select * from soutai where user_classroom like ?",
+								"%" + searchValue + "%");
+					}
+				} else {
+					resultList = jdbcTemplate.queryForList("select * from soutai");
+				}
+
+		// リストの要素ごとに処理
+		// リストの要素ごとに処理
+		if (resultList != null) {
+		    for (Map<String, Object> result : resultList) {
+		        Object judgeValue = result.get("judge");
+
+		        if (judgeValue instanceof Number) {
+		            int status = ((Number) judgeValue).intValue();
+		            String statusString = getStatusString(status);
+		            result.put("judge", statusString);
+		        } else {
+		            // "judge"がNumber型でない場合の処理（デフォルト値を設定するなど）
+		            result.put("judge", "未入力");
+		        }
+		    }
 		}
+
+
 
 		// 実行結果をmodelにしまってHTMLで出せるようにする。
 		model.addAttribute("selectResult", resultList);
-		model.addAttribute("searchName", searchName); // 検索条件を画面に表示するための設定
 
 		return null;
 
+	}
+
+
+	private String getStatusString(int status) {
+		switch (status) {
+		case 0:
+			return "未審査";
+		case 1:
+			return "許可";
+		case 2:
+			return "不許可";
+		default:
+			return "エラー";
+		}
 	}
 }

@@ -443,8 +443,8 @@ public class MyLine {
 				String time = userStateService.getUserSoutaiTime(userId);
 				System.out.println(time);
 				jdbcTemplate.update(
-						"INSERT INTO soutai ( teacher_id ,student_name ,reason,judge,student_id,time) VALUES (?,?,?,0,?,?);",
-						teacherId, name, replyText, userId, time);
+						"INSERT INTO soutai ( teacher_id ,student_name ,reason,judge,student_id,time,user_grade,user_classroom) VALUES (?,?,?,0,?,?,?,?);",
+						teacherId, name, replyText, userId, time,grade,classroom);
 
 				MyLine2 myline2 = new MyLine2();
 				myline2.soutai(teacherId, name);
@@ -477,6 +477,42 @@ public class MyLine {
 				replyMessage(replyToken, replyMessageText);
 				userStateService.removeUserState(userId);
 				//////////////////////////////////////////////////////////////////
+			} else if ("退出".equals(replyText)) {
+
+				String replyMessageText = "退出時間を記録します。よろしいですか？\nよろしければ「はい」\nキャンセルする場合は「キャンセル」\nを入力してください。";
+				replyMessage(replyToken, replyMessageText);
+				userStateService.setUserState(userId, "taisyutu");
+			} else if ("taisyutu".equals(userStateService.getUserState(userId)) && "はい".equals(replyText)) {
+				LocalTime currentTime = LocalTime.now();//時間を取得
+				int hour = currentTime.getHour();
+				int min = currentTime.getMinute();
+
+				String time_hour = Integer.toString(hour);
+				String time_min = Integer.toString(min);
+				String time = time_hour + time_min;
+
+				jdbcTemplate.update("UPDATE user SET Exittime  = ? WHERE user_id = ?;", time,userId);
+				String replyMessageText = "記録しました。授業に戻る場合は「復席」と入力してください";
+				replyMessage(replyToken, replyMessageText);
+				userStateService.removeUserState(userId);
+			} else if ("復籍".equals(replyText)) {
+
+				String replyMessageText = "復籍時間を記録します。よろしいですか？\nよろしければ「はい」\nキャンセルする場合は「キャンセル」\nを入力してください。";
+				replyMessage(replyToken, replyMessageText);
+				userStateService.setUserState(userId, "hukuseki");
+			} else if ("hukuseki".equals(userStateService.getUserState(userId)) && "はい".equals(replyText)) {
+				LocalTime currentTime = LocalTime.now();//時間を取得
+				int hour = currentTime.getHour();
+				int min = currentTime.getMinute();
+
+				String time_hour = Integer.toString(hour);
+				String time_min = Integer.toString(min);
+				String time = time_hour + time_min;
+
+				jdbcTemplate.update("UPDATE user SET Entertime   = ? WHERE user_id = ?;", time,userId);
+				String replyMessageText = "記録しました。";
+				replyMessage(replyToken, replyMessageText);
+				userStateService.removeUserState(userId);
 			} else {
 				replyMessage(replyToken, "メニューから選択してください");
 			}

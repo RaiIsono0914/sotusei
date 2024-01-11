@@ -2,9 +2,9 @@
 <html>
 
 <head>
-	<meta charset="UTF-8">
-	<link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
-	<title>パスワード表示</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
+<title>パスワード表示</title>
 
 </head>
 
@@ -36,10 +36,8 @@
 				<option value="grade">学年</option>
 				<option value="classroom">クラス</option>
 				<option value="name">名前</option>
-			</select>
-
-			<input type="text" id="searchValue" name="search" th:value="${searchValue}" /> <input type="submit"
-				value="Search">
+			</select> <input type="text" id="searchValue" name="search"
+				th:value="${searchValue}" /> <input type="submit" value="Search">
 		</form>
 
 		<!-- 検索結果表示 -->
@@ -49,6 +47,7 @@
 					<th>名前</th>
 					<th>学年</th>
 					<th>クラス</th>
+					<th>PC貸出番号</th>
 					<th>1限目</th>
 					<th>出席時間</th>
 					<th>2限目</th>
@@ -57,6 +56,8 @@
 					<th>出席時間</th>
 					<th>4限目</th>
 					<th>出席時間</th>
+					<th>退出時間</th>
+					<th>復籍時間</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -65,6 +66,7 @@
 					<td th:text="${result['user_name']}"></td>
 					<td th:text="${result['user_grade']}"></td>
 					<td th:text="${result['user_classroom']}"></td>
+					<td th:text="${result?.user_pc}"></td>
 					<td th:text="${result['class1']}"></td>
 					<td th:text="${result['class1time']}"></td>
 					<td th:text="${result['class2']}"></td>
@@ -73,6 +75,9 @@
 					<td th:text="${result['class3time']}"></td>
 					<td th:text="${result['class4']}"></td>
 					<td th:text="${result['class4time']}"></td>
+					<td th:text="${result['Exittime']}"></td>
+					<td th:text="${result['Entertime']}"></td>
+
 				</tr>
 			</tbody>
 		</table>

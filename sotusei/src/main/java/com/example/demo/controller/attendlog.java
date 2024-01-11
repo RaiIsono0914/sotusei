@@ -18,21 +18,30 @@ public class attendlog {
     JdbcTemplate jdbcTemplate;
 
     @RequestMapping(path = "/attendlog", method = RequestMethod.GET)
-    public String eidht(@RequestParam(name = "search", required = false) String searchName, Model model) {
+    public String eidht(@RequestParam(name = "search", required = false) String searchValue, @RequestParam(name = "kinds", required = false) String searchKinds,
+			Model model) {
         // SELECT文の結果をしまうためのリスト
-        List<Map<String, Object>> resultList;
+    	List<Map<String, Object>> resultList = null;
 
-        // 検索条件が指定されている場合は、名前を含むデータを検索
-        if (searchName != null && !searchName.isEmpty()) {
-            resultList = jdbcTemplate.queryForList("select * from attendlog where user_name like ?", "%" + searchName + "%");
-        } else {
-            // 検索条件が指定されていない場合は、全データを取得
-            resultList = jdbcTemplate.queryForList("select * from attendlog");
-        }
+		// 検索条件が指定されている場合は、名前を含むデータを検索
+		if (searchValue != null && !searchValue.isEmpty()) {
+			if ("name".equals(searchKinds)) {
+				resultList = jdbcTemplate.queryForList("select * from attendlog where user_name like ?",
+						"%" + searchValue + "%");
+			} else if ("grade".equals(searchKinds)) {
+				resultList = jdbcTemplate.queryForList("select * from attendlog where user_grade like ?",
+						"%" + searchValue + "%");
+			} else if ("classroom".equals(searchKinds)) {
+				resultList = jdbcTemplate.queryForList("select * from attendlog where user_classroom like ?",
+						"%" + searchValue + "%");
+			}
+		} else {
+			resultList = jdbcTemplate.queryForList("select * from attendlog");
+		}
 
         // リストの要素ごとに処理
         for (Map<String, Object> result : resultList) {
-            for (int i = 1; i <= 3; i++) {
+            for (int i = 1; i <= 4; i++) {
                 // "class1", "class2", "class3"の値がnullでないことを確認してから処理する
                 Object classValue = result.get("class" + i);
                 if (classValue != null) {
@@ -48,7 +57,6 @@ public class attendlog {
 
         // 実行結果をmodelにしまってHTMLで出せるようにする。
         model.addAttribute("selectResult", resultList);
-        model.addAttribute("searchName", searchName); // 検索条件を画面に表示するための設定
 
         return "attendlog";
     }
@@ -70,6 +78,8 @@ public class attendlog {
                 return "早退";
             case 6:
                 return "公欠";
+            case 7:
+    			return "授業なし";
             default:
                 return "エラー";
         }

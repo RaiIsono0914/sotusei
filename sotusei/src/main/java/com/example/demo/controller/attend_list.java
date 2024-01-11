@@ -45,7 +45,7 @@ public class attend_list {
 		// リストの要素ごとに処理
 		if (resultList != null) {
 			for (Map<String, Object> result : resultList) {
-				for (int i = 1; i <= 3; i++) {
+				for (int i = 1; i <= 4; i++) {
 					// "class1", "class2", "class3"の値がnullでないことを確認してから処理する
 					Object classValue = result.get("class" + i);
 					if (classValue != null) {
@@ -83,6 +83,8 @@ public class attend_list {
 			return "早退";
 		case 6:
 			return "公欠";
+		case 7:
+			return "授業なし";
 		default:
 			return "エラー";
 		}
