@@ -222,7 +222,7 @@ public class attend {
 	}
 
 	//データ保存
-	@Scheduled(cron = "0 42 14 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
+	@Scheduled(cron = "0 0 18 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void sevedata() {
 		List<Map<String, Object>> resultList = jdbcTemplate.queryForList("select * FROM user");
 

@@ -149,7 +149,7 @@ public class LineBotStudents {
 
 				String stringswitchtime = Integer.toString(hour) + Integer.toString(minute);
 				int switchtime = Integer.parseInt(stringswitchtime);
-
+System.out.println(switchtime);
 				//初期化
 				List<Map<String, Object>> resultList;
 				Object dbpassObject = null;
@@ -284,12 +284,6 @@ public class LineBotStudents {
 					System.out.println(dbpass);//確認
 					System.out.println(password);//確認
 
-					//３限の出席状況確認
-
-					//
-
-					System.out.println(attend);//確認
-
 					if (dbpass.equals(password)) {//パスワード正解
 						resultList = jdbcTemplate.queryForList("select class3 FROM user where user_id = ?", userId);
 						Map<String, Object> firstRow2 = resultList.get(0);
@@ -301,14 +295,17 @@ public class LineBotStudents {
 						int min = currentTime.getMinute();//分を取得
 
 						String time_hour = Integer.toString(hour);
+						System.out.println(time_hour);
 						String time_min = Integer.toString(min);
+						System.out.println(time_min);
 						String time = time_hour + time_min;
+						System.out.println(time);
 
 						if (attend.equals("0")) {//出席状況が未入力の場合
 
 							//出席をDBに送信
 							System.out.println(userId);
-							jdbcTemplate.update("UPDATE user SET class3 = ?,class3time WHERE user_id = ?;", 1, time,
+							jdbcTemplate.update("UPDATE user SET class3 = ?,class3time=? WHERE user_id = ?;", 1, time,
 									userId);
 
 							System.out.println("passok");
@@ -316,7 +313,7 @@ public class LineBotStudents {
 							replyMessage(replyToken, replyMessageText);
 							userStateService.removeUserState(userId);//ユーザーの状況リセット
 						} else if (attend.equals("4")) {
-							jdbcTemplate.update("UPDATE user SET class3 = ?,class3time WHERE user_id = ?;", 2, time,
+							jdbcTemplate.update("UPDATE user SET class3 = ?,class3time=? WHERE user_id = ?;", 2, time,
 									userId);
 
 							System.out.println("passok");
@@ -351,7 +348,6 @@ public class LineBotStudents {
 					System.out.println(dbpass);//確認
 					System.out.println(password);//確認
 
-					System.out.println(attend);//確認
 
 					if (dbpass.equals(password)) {//パスワード正解
 						resultList = jdbcTemplate.queryForList("select class4 FROM user where user_id = ?", userId);
@@ -371,7 +367,7 @@ public class LineBotStudents {
 
 							//出席をDBに送信
 							System.out.println(userId);
-							jdbcTemplate.update("UPDATE user SET class4 = ?,class4time WHERE user_id = ?;", 1, time,
+							jdbcTemplate.update("UPDATE user SET class4 = ?,class4time=? WHERE user_id = ?;", 1, time,
 									userId);
 
 							System.out.println("passok");
@@ -379,7 +375,7 @@ public class LineBotStudents {
 							replyMessage(replyToken, replyMessageText);
 							userStateService.removeUserState(userId);//ユーザーの状況リセット
 						} else if (attend.equals("4")) {
-							jdbcTemplate.update("UPDATE user SET class4 = ?,class4time WHERE user_id = ?;", 2, time,
+							jdbcTemplate.update("UPDATE user SET class4 = ?,class4time=? WHERE user_id = ?;", 2, time,
 									userId);
 
 							System.out.println("passok");
@@ -460,7 +456,6 @@ public class LineBotStudents {
 						.queryForList("SELECT user_pc FROM user WHERE user_id = ?", userId);
 				System.out.println(resultList.size());
 				if (resultList.isEmpty() || resultList.get(0).get("user_pc") == null) {
-					jdbcTemplate.update("UPDATE user SET user_pc = ? WHERE user_id = ?;", 1, userId);
 					String replyMessageText = "PC番号を入力してください。半角英数字で入力してください。";//毎朝自動的に返却したことにする
 					replyMessage(replyToken, replyMessageText);
 					userStateService.setUserState(userId, "pcnumber");

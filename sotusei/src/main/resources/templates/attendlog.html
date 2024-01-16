@@ -48,13 +48,15 @@
                     <th>クラス</th>
                     <th>学年</th>
                     <th>1限目</th>
-                    <th>出席時間</th>
+                    <th>時間</th>
                     <th>2限目</th>
-                    <th>出席時間</th>
+                    <th>時間</th>
                     <th>3限目</th>
-                    <th>出席時間</th>
+                    <th>時間</th>
+                    <th>4限目</th>
+                    <th>時間</th>
                     <th>出席日</th>
-                    <th>PC</th>
+                    <th>PC番号</th>
                     <th>退出時間</th>
                     <th>復籍時間</th>
                 </tr>
@@ -71,6 +73,8 @@
                     <td th:text="${result['class2time']}"></td>
                     <td th:text="${result['class3']}"></td>
                     <td th:text="${result['class3time']}"></td>
+                    <td th:text="${result['class4']}"></td>
+                    <td th:text="${result['class4time']}"></td>
                     <td th:text="${result['day']}"></td>
                     <td th:text="${result['pc']}"></td>
                     <td th:text="${result['Exittime']}"></td>

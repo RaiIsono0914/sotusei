@@ -108,7 +108,7 @@ public class LineBotTeachers {
 				String userName = "";
 				// クエリを使用してデータベースから結果を取得
 				resultList = jdbcTemplate
-						.queryForList("SELECT user_name FROM user WHERE class1=4 or class2=4 or class3=4");
+						.queryForList("SELECT user_name FROM user WHERE class1=4 or class2=4 or class3=4 or class4=4 or class1=2 or class2=2 or class3=2 or class4=2");
 
 				// resultListの要素を取り出して処理
 				for (Map<String, Object> resultMap : resultList) {
