@@ -251,13 +251,13 @@ public class attend {
 		}
 	}
 
-	@Scheduled(cron = "0 0 18 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
+	@Scheduled(cron = "0 00 18 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void dele() {
-		jdbcTemplate.update("UPDATE user SET class1 = 0, class2 = 0, class3 = 0,class4 = 0;");
+		jdbcTemplate.update("UPDATE user SET class1 = 0, class2 = 0, class3 = 0,class4 = 0,class1time = null, class2time =null, class3time = null,class4time = null;");
 		System.out.println("今日の出席情報を初期化しました");
 	}
 
-	@Scheduled(cron = "0 0 18 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
+	@Scheduled(cron = "00 00 18 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void dele2() {
 		jdbcTemplate.update("UPDATE user SET Exittime = null,Entertime = null WHERE Exittime IS NOT NULL");
 		System.out.println("今日の退出時間を初期化しました");
