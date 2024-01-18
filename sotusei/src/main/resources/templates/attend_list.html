@@ -41,7 +41,7 @@
 		</form>
 
 		<!-- 検索結果表示 -->
-		<table border="1">
+		<table >
 			<thead>
 				<tr>
 					<th>名前</th>
@@ -78,7 +78,7 @@
 					<td th:text="${result['class4time']}"></td>
 					<td th:text="${result['Exittime']}"></td>
 					<td th:text="${result['Entertime']}"></td>
-					<td><a th:href="@{/attendedit(user_id=${result['user_id']}, user_name=${result['user_name']}, user_grade=${result['user_grade']}, user_classroom=${result['user_classroom']}, user_pc=${result?.user_pc}, class1=${result['class1']}, class1time=${result['class1time']}, class2=${result['class2']}, class2time=${result['class2time']}, class3=${result['class3']}, class3time=${result['class3time']}, class4=${result['class4']}, class4time=${result['class4time']}, Exittime=${result['Exittime']}, Entertime=${result['Entertime']})}">編集(未完成)</a></td>
+					<td  class ="linkbuttontd"><a class="linkbutton" th:href="@{/attendedit(user_id=${result['user_id']}, user_name=${result['user_name']}, user_grade=${result['user_grade']}, user_classroom=${result['user_classroom']}, user_pc=${result?.user_pc}, class1=${result['class1']}, class1time=${result['class1time']}, class2=${result['class2']}, class2time=${result['class2time']}, class3=${result['class3']}, class3time=${result['class3time']}, class4=${result['class4']}, class4time=${result['class4time']}, Exittime=${result['Exittime']}, Entertime=${result['Entertime']})}">編集</a></td>
 
 
 

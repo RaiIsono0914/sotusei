@@ -97,6 +97,42 @@ input[type="submit"]:hover {
 	background-color: #ff7043;
 }
 
+input[type="button"] {
+	background-color: #367281;
+	color: #fff;
+	padding: 10px 20px;
+	border: none;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+input[type="button"]:hover {
+	background-color: #ff7043;
+}
+
+.linkbuttontd {
+    padding: 0;
+    text-align: center; /* セル内のテキストを中央揃えにするためのスタイル */
+}
+
+.linkbutton {
+    display: block; /* インライン要素からブロック要素に変更する */
+    width: 100%; /* セルの幅いっぱいに広げる */
+    text-align: center; /* テキストを中央揃えにする */
+    background-color: #367281;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.linkbutton:hover {
+    background-color: #ff7043;
+}
+
+
+
 /* Text Input Fields */
 input[type="text"] {
 	border: 2px solid #ccc;
@@ -131,8 +167,7 @@ table {
 	margin-top: 20px;
 }
 
-th,
-td {
+th, td {
 	padding: 8px;
 	text-align: left;
 	border-bottom: 1px solid #ddd;
@@ -149,14 +184,12 @@ tr:nth-child(even) {
 	background-color: #f9f9f9;
 }
 
-td:first-child,
-th:first-child {
+td:first-child, th:first-child {
 	border-left: 1px solid #ddd;
 }
 
 /* 以下の部分は省略していません */
-td:last-child,
-th:last-child {
+td:last-child, th:last-child {
 	border-right: 1px solid #ddd;
 	/* これで表の右端にも縦線を追加 */
 }
@@ -176,7 +209,6 @@ select:focus {
 	border-color: #007bff;
 	box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
-
 
 /* Checkbox Styling */
 .checkboxtd {
@@ -210,11 +242,6 @@ select:focus {
 	/* ホバー時の背景色 */
 	transition: background-color 0.3s ease, border-color 0.3s ease;
 }
-
-
-
-
-
 
 /* Footer */
 footer {
