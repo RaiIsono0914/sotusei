@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
+  <title>ユーザー更新</title>
+</head>
+
+<body>
+
+  <header>
+    <h1>生徒の情報を変更・消去する</h1>
+    <p>情報を変更・消去することができます。</p>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a th:href="@{/homee}">ホーム</a></li>
+      <li><a th:href="@{/passwordlist}">本日のパスワード</a></li>
+      <li><a th:href="@{/attend_list}">本日の出席情報</a></li>
+      <li><a th:href="@{/studentlist}">学生情報</a></li>
+      <li><a th:href="@{/attendlog}">過去の出席情報</a></li>
+      <li><a th:href="@{/soutai}">早退申請</a></li>
+      <li><a th:href="@{/classroom}">時間割管理</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <form th:action="@{/studentedit}" method="POST" onsubmit="return validateForm();">
+      <h2>編集</h2>
+      <p th:text="${user_name + 'さんの出席情報を編集します'}"></p>
+      <p>
+        <!-- 氏名、学籍番号、学年、クラスの入力フォーム -->
+        氏名：<input type="text" name="user_name" th:value="${user_name}" /><br>
+        学籍番号：<input type="text" name="user_number" th:value="${user_number}" /><br>
+        学年：<input type="text" name="user_grade" id="user_grade" th:value="${user_grade}" /><br>
+        クラス：<input type="text" name="user_classroom" id="user_classroom" th:value="${user_classroom}" /><br>
+        <!-- ユーザーIDの隠しフィールド -->
+        <input type="hidden" name="user_id" th:value="${user_id}" />
+        <!-- 更新ボタン -->
+        <input type="submit" value="更新">
+      </p>
+    </form>
+  </main>
+
+  <footer>
+    <p>&copy; News Site. All Rights Reserved.</p>
+  </footer>
+
+  <!-- JavaScript function to validate the form -->
+  <script>
+    function validateForm() {
+      // 学年とクラスの正規表現パターン
+      var gradePattern = /^[0-9]+$/; // 半角数字
+      var classroomPattern = /^[A-Z]+$/; // 大文字半角英字
+
+      // 学年とクラスの入力値を取得
+      var userGrade = document.getElementById('user_grade').value;
+      var userClassroom = document.getElementById('user_classroom').value;
+
+      // バリデーションチェック
+      if (!gradePattern.test(userGrade) || !classroomPattern.test(userClassroom)) {
+        alert('学年は半角数字、クラスは大文字半角英字で入力してください。');
+        return false; // フォーム送信を中止
+      }
+
+      return true; // フォーム送信を許可
+    }
+  </script>
+
+</body>
+
+</html>

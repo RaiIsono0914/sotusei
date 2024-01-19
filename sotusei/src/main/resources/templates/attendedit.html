@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
+<title>ユーザー更新</title>
+
+<script>
+    function validateInput(inputElement) {
+        var inputValue = inputElement.value.trim();
+
+        // Check if the input is a 3 to 4 digit number
+        if (inputValue.length !== 3 && inputValue.length !== 4) {
+            // Use setTimeout to delay the alert and allow the blur event to complete
+            alert("時間は3～4桁で入力してください。\n例：9:35→935");
+            inputElement.focus();
+            inputElement.value='';
+        }
+    }
+</script>
+</head>
+
+<body>
+
+	<header>
+		<h1>生徒の情報を変更する</h1>
+		<p>情報を変更・消去することができます。</p>
+	</header>
+
+	<nav>
+		<ul>
+			<li><a th:href="@{/homee}">ホーム</a></li>
+			<li><a th:href="@{/passwordlist}">本日のパスワード</a></li>
+			<li><a th:href="@{/attend_list}">本日の出席情報</a></li>
+			<li><a th:href="@{/studentlist}">学生情報</a></li>
+			<li><a th:href="@{/attendlog}">過去の出席情報</a></li>
+			<li><a th:href="@{/soutai}">早退申請</a></li>
+			<li><a th:href="@{/classroom}">時間割管理</a></li>
+
+		</ul>
+	</nav>
+
+	<main>
+		<form th:action="@{/attendedit}" method="POST" onSubmit="return false;">
+			<h2>編集</h2>
+			<p th:text="${user_grade + '年' + user_classroom + '組' + user_name + 'さんの出席情報を編集します'}"></p>
+
+			<p>
+
+				                1限の出席情報：<select name="class1" th:value="${class1}">
+                    <option value="1">出席</option>
+                    <option value="2">遅刻</option>
+                    <option value="3">欠席</option>
+                    <option value="5">早退</option>
+                    <option value="6">公欠</option>
+                    <option value="7">授業なし</option>
+                </select>
+                時間：<input type="text" name="class1time" th:value="${class1time}" onChange="validateInput(this)"/><br>
+
+                2限の出席情報：<select name="class2" th:value="${class2}">
+                    <option value="1">出席</option>
+                    <option value="2">遅刻</option>
+                    <option value="3">欠席</option>
+                    <option value="5">早退</option>
+                    <option value="6">公欠</option>
+                    <option value="7">授業なし</option>
+                </select>
+                時間：<input type="text" name="class2time" th:value="${class2time}" onChange="validateInput(this)"/><br>
+
+                3限の出席情報：<select name="class3" th:value="${class3}">
+                    <option value="1">出席</option>
+                    <option value="2">遅刻</option>
+                    <option value="3">欠席</option>
+                    <option value="5">早退</option>
+                    <option value="6">公欠</option>
+                    <option value="7">授業なし</option>
+                </select>
+                時間：<input type="text" name="class3time" th:value="${class3time}" onChange="validateInput(this)"/><br>
+
+                4限の出席情報：<select name="class4" th:value="${class4}">
+                    <option value="1">出席</option>
+                    <option value="2">遅刻</option>
+                    <option value="3">欠席</option>
+                    <option value="5">早退</option>
+                    <option value="6">公欠</option>
+                    <option value="7">授業なし</option>
+                </select>
+                時間：<input type="text" name="class4time" th:value="${class4time}" onChange="validateInput(this)"/><br>
+                PC番号：<input type="text" name="user_pc" th:value="${user_pc}" /><br>
+                退出時間：<input type="text" name="Exittime" th:value="${Exittime}" onChange="validateInput(this)"/><br>
+                復籍時間：<input type="text" name="Entertime" th:value="${Entertime}" onChange="validateInput(this)"/><br>
+                <input type="hidden" name="user_id" th:value="${user_id}" />
+                <input type="button" value="更新" onClick="submit()">
+
+
+			</p>
+		</form>
+	</main>
+</body>
+</html>

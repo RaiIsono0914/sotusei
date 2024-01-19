@@ -244,7 +244,7 @@ public class attend {
 			String Exittime  = (String) result.get("Exittime");
 			String Entertime   = (String) result.get("Entertime");
 			// attendlogテーブルにデータを挿入
-			String insertSql = "INSERT INTO attendlog (user_name,user_classroom,user_grade,class1, class2, class3, class4,class1time,class2time,class3time,class4time,pc,Exittime,Entertime) VALUES (?,?,?,?,?,?, ?,?,?,?,?,?,?,?)";
+			String insertSql = "INSERT INTO attendlog (user_name,user_classroom,user_grade,class1, class2, class3, class4,class1time,class2time,class3time,class4time,user_pc,Exittime,Entertime) VALUES (?,?,?,?,?,?, ?,?,?,?,?,?,?,?)";
 			jdbcTemplate.update(insertSql, user_name,user_classroom,user_grade, class1, class2, class3, class4, class1time, class2time,
 					class3time, class4time, pc,Exittime,Entertime);
 			System.out.println("今日の出席情報をDBに保存しました");

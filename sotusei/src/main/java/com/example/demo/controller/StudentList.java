@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class LinebotController {
+public class StudentList {
 
 	//DBへつなぐために必要
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
-	@RequestMapping(path = "/linebot", method = RequestMethod.GET)
+	@RequestMapping(path = "/studentlist", method = RequestMethod.GET)
 	public String eidht(@RequestParam(name = "search", required = false) String searchValue, @RequestParam(name = "kinds", required = false) String searchKinds,
 			Model model) {
 
@@ -43,7 +43,7 @@ public class LinebotController {
 		//実行結果をmodelにしまってHTMLで出せるようにする。
 		model.addAttribute("selectResult", resultList);
 
-		return "linebot";
+		return "studentlist";
 	}
 
 }

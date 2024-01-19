@@ -60,7 +60,7 @@ nav ul li {
 	background: #367281;
 	list-style-type: none;
 	float: left;
-	width: calc(100%/ 8);
+	width: calc(100%/ 7);
 	text-align: center;
 	line-height: 40px;
 	color: #df9;
