@@ -60,7 +60,7 @@ public class HomeeController {
 		//実行結果をmodelにしまってHTMLで出せるようにする。
 		model.addAttribute("pass", pass);
 
-		return null;
+		return "homee";
 
 	}
 }

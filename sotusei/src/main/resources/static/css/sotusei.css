@@ -169,7 +169,6 @@ table {
 
 th, td {
 	padding: 8px;
-	text-align: left;
 	border-bottom: 1px solid #ddd;
 	border-right: 1px solid #ddd;
 	/* 縦線を追加 */
