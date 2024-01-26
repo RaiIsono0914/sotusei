@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import java.time.LocalTime;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,28 +13,28 @@ public class PasswordSet {
     JdbcTemplate jdbcTemplate;
 
 
-    @Scheduled(cron = "0 0 8 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
-    public void generateAndSavePassword() {
-        LocalTime currentTime = LocalTime.now();
-        int hour = currentTime.getHour();
+    @Scheduled(cron = "00 00 8 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
+    public void getDisplay_PassSet() {
 
-        if (hour == 10) {
+  
             // ランダムなパスワード生成
-            String generatedPassword = generateRandomPassword(4);
-
+            String generatedPassword = "";
+            generatedPassword = GenerateRandomPassword(4);
             int first = Integer.parseInt(generatedPassword);
+            generatedPassword = GenerateRandomPassword(4);
             int second = Integer.parseInt(generatedPassword);
+            generatedPassword = GenerateRandomPassword(4);
             int third = Integer.parseInt(generatedPassword);
+            generatedPassword = GenerateRandomPassword(4);
             int fourth = Integer.parseInt(generatedPassword);
 
-            // ここでデータベースにパスワードを保存するなどの処理を実行できます
-            jdbcTemplate.update("INSERT INTO password (first, second, third,fourth) VALUES (?, ?, ?,?)", first, second, third,fourth);
-        }
+            // ここでデータベースにパスワードを保存するなどの処理を実行でき
+            jdbcTemplate.update("UPDATE password SET first = ? ,second = ?, third = ?, fourth = ?;",first, second, third,fourth); 
     }
 
 
 
-    public String generateRandomPassword(int length) {
+    public String GenerateRandomPassword(int length) {
         String digits = "0123456789";
         StringBuilder password = new StringBuilder();
 

@@ -35,7 +35,7 @@ public class LineBotStudents {
 
 	@PostMapping("/sotusei")
 	@CrossOrigin(origins = "*")
-	public void postApidata(@RequestBody LineData webhookData) {
+	public void Linebot_Students(@RequestBody LineData webhookData) {
 
 		for (Event event : webhookData.getEvents()) {
 
@@ -87,7 +87,6 @@ public class LineBotStudents {
 				userStateService.setUserName(userId, replyText);
 
 			} else if ("wait_grade".equals(userStateService.getUserState(userId))) {
-				System.out.println(replyText);
 				if (replyText.trim().equals("1") || replyText.trim().equals("2") || replyText.trim().equals("3")
 						|| replyText.trim().equals("4")) {
 					// ここに処理を記述
@@ -149,7 +148,7 @@ public class LineBotStudents {
 
 				String stringswitchtime = Integer.toString(hour) + Integer.toString(minute);
 				int switchtime = Integer.parseInt(stringswitchtime);
-System.out.println(switchtime);
+				System.out.println(switchtime);
 				//初期化
 				List<Map<String, Object>> resultList;
 				Object dbpassObject = null;
@@ -179,8 +178,8 @@ System.out.println(switchtime);
 						hour = currentTime.getHour();//時を取得
 						int min = currentTime.getMinute();//分を取得
 
-						String time_hour = Integer.toString(hour);
-						String time_min = Integer.toString(min);
+						String time_hour = String.format("%02d", hour);
+						String time_min = String.format("%02d", min);
 						String time = time_hour + time_min;
 
 						if (attend.equals("0")) {
@@ -236,8 +235,8 @@ System.out.println(switchtime);
 						hour = currentTime.getHour();//時を取得
 						int min = currentTime.getMinute();//分を取得
 
-						String time_hour = Integer.toString(hour);
-						String time_min = Integer.toString(min);
+						String time_hour = String.format("%02d", hour);
+						String time_min = String.format("%02d", min);
 						String time = time_hour + time_min;
 
 						if (attend.equals("0")) {
@@ -294,12 +293,9 @@ System.out.println(switchtime);
 						hour = currentTime.getHour();//時を取得
 						int min = currentTime.getMinute();//分を取得
 
-						String time_hour = Integer.toString(hour);
-						System.out.println(time_hour);
-						String time_min = Integer.toString(min);
-						System.out.println(time_min);
+						String time_hour = String.format("%02d", hour);
+						String time_min = String.format("%02d", min);
 						String time = time_hour + time_min;
-						System.out.println(time);
 
 						if (attend.equals("0")) {//出席状況が未入力の場合
 
@@ -348,7 +344,6 @@ System.out.println(switchtime);
 					System.out.println(dbpass);//確認
 					System.out.println(password);//確認
 
-
 					if (dbpass.equals(password)) {//パスワード正解
 						resultList = jdbcTemplate.queryForList("select class4 FROM user where user_id = ?", userId);
 						Map<String, Object> firstRow2 = resultList.get(0);
@@ -359,8 +354,8 @@ System.out.println(switchtime);
 						hour = currentTime.getHour();//時を取得
 						int min = currentTime.getMinute();//分を取得
 
-						String time_hour = Integer.toString(hour);
-						String time_min = Integer.toString(min);
+						String time_hour = String.format("%02d", hour);
+						String time_min = String.format("%02d", min);
 						String time = time_hour + time_min;
 
 						if (attend.equals("0")) {//出席状況が未入力の場合
@@ -440,10 +435,10 @@ System.out.println(switchtime);
 				System.out.println(time);
 				jdbcTemplate.update(
 						"INSERT INTO soutai ( teacher_id ,student_name ,reason,judge,student_id,time,user_grade,user_classroom) VALUES (?,?,?,0,?,?,?,?);",
-						teacherId, name, replyText, userId, time,grade,classroom);
+						teacherId, name, replyText, userId, time, grade, classroom);
 
 				LineBotTeachers myline2 = new LineBotTeachers();
-				myline2.soutai(teacherId, name);
+				myline2.Soutai(teacherId, name);
 
 				String replyMessageText = "早退申請が送信されました";
 				replyMessage(replyToken, replyMessageText);
@@ -486,11 +481,11 @@ System.out.println(switchtime);
 				String time_min = Integer.toString(min);
 				String time = time_hour + time_min;
 
-				jdbcTemplate.update("UPDATE user SET Exittime  = ? WHERE user_id = ?;", time,userId);
+				jdbcTemplate.update("UPDATE user SET Exittime  = ? WHERE user_id = ?;", time, userId);
 				String replyMessageText = "記録しました。授業に戻る場合は「復席」と入力してください";
 				replyMessage(replyToken, replyMessageText);
 				userStateService.setUserState(userId, "taisyutu");
-			} else if ("復籍".equals(replyText)&&"taisyutu".equals(userStateService.getUserState(userId))) {
+			} else if ("復籍".equals(replyText) && "taisyutu".equals(userStateService.getUserState(userId))) {
 
 				String replyMessageText = "復籍時間を記録します。よろしいですか？\nよろしければ「はい」\nキャンセルする場合は「キャンセル」\nを入力してください。";
 				replyMessage(replyToken, replyMessageText);
@@ -504,7 +499,7 @@ System.out.println(switchtime);
 				String time_min = Integer.toString(min);
 				String time = time_hour + time_min;
 
-				jdbcTemplate.update("UPDATE user SET Entertime   = ? WHERE user_id = ?;", time,userId);
+				jdbcTemplate.update("UPDATE user SET Entertime   = ? WHERE user_id = ?;", time, userId);
 				String replyMessageText = "記録しました。";
 				replyMessage(replyToken, replyMessageText);
 				userStateService.removeUserState(userId);
@@ -515,7 +510,7 @@ System.out.println(switchtime);
 
 	}
 
-	public void soutai_judge(String message, String id) {
+	public void Soutai_Judge(String message, String id) {
 
 		pushMessage(id, message);
 	}

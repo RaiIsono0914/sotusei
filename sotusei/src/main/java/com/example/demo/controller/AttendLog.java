@@ -18,7 +18,7 @@ public class AttendLog {
     JdbcTemplate jdbcTemplate;
 
     @RequestMapping(path = "/attendlog", method = RequestMethod.GET)
-    public String eidht(@RequestParam(name = "search", required = false) String searchValue, @RequestParam(name = "kinds", required = false) String searchKinds,
+    public String getDisplay_Attend_Log(@RequestParam(name = "search", required = false) String searchValue, @RequestParam(name = "kinds", required = false) String searchKinds,
 			Model model) {
         // SELECT文の結果をしまうためのリスト
     	List<Map<String, Object>> resultList = null;

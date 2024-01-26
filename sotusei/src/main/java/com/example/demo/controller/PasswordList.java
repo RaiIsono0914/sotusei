@@ -17,7 +17,7 @@ public class PasswordList {
     JdbcTemplate jdbcTemplate;
 
     @RequestMapping(path = "/passwordlist", method = RequestMethod.GET)
-    public String eidht(Model model) {
+    public String getDisplay_PassList(Model model) {
         // SELECT文の結果をしまうためのリスト
         List<Map<String, Object>> resultList;
 

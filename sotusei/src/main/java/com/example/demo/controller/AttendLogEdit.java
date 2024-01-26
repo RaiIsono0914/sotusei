@@ -17,7 +17,7 @@ public class AttendLogEdit {
     JdbcTemplate jdbcTemplate;
 
     @GetMapping("/attendlogedit")
-    public String tenthGet2(@RequestParam("user_id") String userId,
+    public String getDisplay_Attend_Log_Edit(@RequestParam("user_id") String userId,
                             @RequestParam("user_name") String user_name,
                             @RequestParam("user_grade") String user_grade,
                             @RequestParam("user_classroom") String user_classroom,
@@ -57,7 +57,7 @@ public class AttendLogEdit {
     }
 
     @PostMapping("/attendlogedit")
-    public String tenthPostUpdate(@RequestParam("user_id") String userId,
+    public String postDisplay_Attend_Log_Edit(@RequestParam("user_id") String userId,
                                   @RequestParam("class1") String class1,
                                   @RequestParam("class1time") String class1time,
                                   @RequestParam("class2") String class2,

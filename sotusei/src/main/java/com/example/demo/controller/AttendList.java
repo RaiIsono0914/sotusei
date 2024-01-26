@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class attend_list {
+public class AttendList {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
 	@RequestMapping(path = "/attend_list", method = RequestMethod.GET)
-	public String eidht(@RequestParam(name = "search", required = false) String searchValue, @RequestParam(name = "kinds", required = false) String searchKinds,
+	public String getDisplay_Attend_List(@RequestParam(name = "search", required = false) String searchValue, @RequestParam(name = "kinds", required = false) String searchKinds,
 			Model model) {
 
 		System.out.println(searchValue+searchKinds);

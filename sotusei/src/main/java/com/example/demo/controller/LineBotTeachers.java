@@ -35,7 +35,7 @@ public class LineBotTeachers {
 
 	@PostMapping("/sotusei2")
 	@CrossOrigin(origins = "*")
-	public void postApidata(@RequestBody LineData webhookData) {
+	public void Linebot_Teachers(@RequestBody LineData webhookData) {
 
 		for (Event event : webhookData.getEvents()) {
 
@@ -208,7 +208,7 @@ public class LineBotTeachers {
 				}
 
 				LineBotStudents myline = new LineBotStudents();
-				myline.soutai_judge(message, id);
+				myline.Soutai_Judge(message, id);
 
 				jdbcTemplate.update(
 						"UPDATE soutai SET judge = 1 where id=?;", judgeid);
@@ -253,7 +253,7 @@ public class LineBotTeachers {
 				}
 
 				LineBotStudents myline = new LineBotStudents();
-				myline.soutai_judge(message, id);
+				myline.Soutai_Judge(message, id);
 
 				jdbcTemplate.update(
 						"UPDATE soutai SET judge = 2 where id=?;", judgeid);
@@ -269,13 +269,13 @@ public class LineBotTeachers {
 
 	}
 
-	public void soutai(String teacherId, String name) {
+	public void Soutai(String teacherId, String name) {
 		pushMessage(teacherId, name + "さんが早退申請を送信しました。\nメニューから「早退確認」を選択してください。");
 	}
 
 	///////////////以下遅刻通知////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@Scheduled(cron = "0 36 9 * * MON-FRI")
-	public void class1tikoku() {
+	public void Class1_Message() {
 
 		List<Map<String, Object>> resultList;
 		List<Map<String, Object>> teacherList;
@@ -304,7 +304,7 @@ public class LineBotTeachers {
 	}
 
 	@Scheduled(cron = "0 21 11 * * MON-FRI")
-	public void class2tikoku() {
+	public void Class2_Message() {
 
 		List<Map<String, Object>> resultList;
 		List<Map<String, Object>> teacherList;
@@ -332,7 +332,7 @@ public class LineBotTeachers {
 	}
 
 	@Scheduled(cron = "0 51 13 * * MON-FRI")
-	public void class3tikoku() {
+	public void Class3_Message() {
 
 		List<Map<String, Object>> resultList;
 		List<Map<String, Object>> teacherList;
@@ -360,7 +360,7 @@ public class LineBotTeachers {
 	}
 
 	@Scheduled(cron = "0 36 15 * * MON-FRI")
-	public void class4tikoku() {
+	public void Class4_Message() {
 
 		List<Map<String, Object>> resultList;
 		List<Map<String, Object>> teacherList;

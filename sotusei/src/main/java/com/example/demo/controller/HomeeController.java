@@ -20,17 +20,21 @@ public class HomeeController {
 	JdbcTemplate jdbcTemplate;
 
 	@RequestMapping(path = "/homee", method = RequestMethod.GET)
-	public String eidht(Model model, HttpSession session) {
+	public String getDisplay_Home(Model model, HttpSession session) {
 
 		LocalTime currentTime = LocalTime.now();//時間を取得
-		int hour = currentTime.getHour();//時を取得
-		int min = currentTime.getMinute();//分を取得
+        int hour = currentTime.getHour();//時を取得
+        int min = currentTime.getMinute();//分を取得
 
-		String time_hour = Integer.toString(hour);
-		String time_min = Integer.toString(min);
-		String time = time_hour + time_min;
+        // 時と分を2桁の文字列に変換
+        String time_hour = String.format("%02d", hour);
+        String time_min = String.format("%02d", min);
 
-		int inttime = Integer.parseInt(time);
+        // 時と分を結合して時間の文字列を作成
+        String time = time_hour + time_min;
+
+        // 文字列を整数に変換
+        int inttime = Integer.parseInt(time);
 
 		System.out.println(inttime);
 		String sql = "";

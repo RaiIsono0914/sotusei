@@ -17,12 +17,12 @@ public class ClassroomController {
 	JdbcTemplate jdbcTemplate;
 
 	@RequestMapping(path = "/classroom", method = RequestMethod.GET)
-	public String edit() {
+	public String getDisplay_Classroom() {
 		return "classroom";
 	}
 
 	@RequestMapping(path = "/classroom", method = RequestMethod.POST)
-	public String updateClassroom(@RequestParam Map<String, String> params) {
+	public String Update_Classroom(@RequestParam Map<String, String> params) {
 		String[] days = { "monday", "tuesday", "wednesday", "thursday", "friday" };
 		String sqlColumns = "";
 		String sqlValues = "";

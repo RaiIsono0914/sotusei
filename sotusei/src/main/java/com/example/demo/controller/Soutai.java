@@ -18,7 +18,7 @@ public class Soutai {
 	JdbcTemplate jdbcTemplate;
 
 	@RequestMapping(path = "/soutai", method = RequestMethod.GET)
-	public String eidht(@RequestParam(name = "search", required = false) String searchValue, @RequestParam(name = "kinds", required = false) String searchKinds,
+	public String getDisplay_Soutai(@RequestParam(name = "search", required = false) String searchValue, @RequestParam(name = "kinds", required = false) String searchKinds,
 			Model model) {
 		// SELECT文の結果をしまうためのリスト
 		// SELECT文の結果をしまうためのリスト

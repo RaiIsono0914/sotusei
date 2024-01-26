@@ -15,7 +15,7 @@ public class StudentEdit {
 	JdbcTemplate jdbcTemplate;
 
 	@RequestMapping(path = "/studentedit", method = RequestMethod.GET)
-	public String tenthGet(@RequestParam("user_id") String userId,
+	public String getDisplay_StudentEdit(@RequestParam("user_id") String userId,
 			@RequestParam("user_name") String user_name,
 			@RequestParam("user_grade") String user_grade,
 			@RequestParam("user_classroom") String user_classroom,
@@ -35,7 +35,7 @@ public class StudentEdit {
 	}
 
 	@RequestMapping(path = "/studentedit", method = RequestMethod.POST)
-	public String tenthPostUpdate(@RequestParam("user_id") String userId,
+	public String postDisplay_StudentEdit(@RequestParam("user_id") String userId,
 	        @RequestParam("user_name") String userName,
 	        @RequestParam("user_grade") String userGrade,
 	        @RequestParam("user_classroom") String userClassroom,
@@ -48,15 +48,4 @@ public class StudentEdit {
 
 	    return "redirect:/studentlist";
 	}
-
-
-	//	@RequestMapping(path = "/linebotdelete", method = RequestMethod.POST)
-	//	public String tenthPostDelete(String user_id) throws IOException {
-	//
-	//		System.out.println(user_id + "を削除しました");
-	//		//データ削除SQL実行
-	//		jdbcTemplate.update("DELETE FROM user WHERE user_id = ?", user_id);
-	//
-	//		return "redirect:/linebotupdata";
-	//	}
 }

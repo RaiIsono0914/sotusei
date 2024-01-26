@@ -19,7 +19,7 @@ public class StudentList {
 	JdbcTemplate jdbcTemplate;
 
 	@RequestMapping(path = "/studentlist", method = RequestMethod.GET)
-	public String eidht(@RequestParam(name = "search", required = false) String searchValue, @RequestParam(name = "kinds", required = false) String searchKinds,
+	public String getDisplay_StudentList(@RequestParam(name = "search", required = false) String searchValue, @RequestParam(name = "kinds", required = false) String searchKinds,
 			Model model) {
 
 		// SELECT文の結果をしまうためのリスト

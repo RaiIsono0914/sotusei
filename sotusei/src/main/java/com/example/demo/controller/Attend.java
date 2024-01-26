@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class attend {
+public class Attend {
 	@Autowired //DB接続
 	private JdbcTemplate jdbcTemplate;
 
@@ -91,7 +91,7 @@ public class attend {
 
 	//	///1限のアラーム////
 	@Scheduled(cron = "0 15 10 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
-	public void absenceFirstMessage() {
+	public void AbsenceFirstMessage() {
 		//初期化
 		List<Map<String, Object>> resultList;
 		Object attendObject = null;
@@ -109,7 +109,7 @@ public class attend {
 
 	///2限のアラーム////
 	@Scheduled(cron = "0 0 12 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
-	public void absenceSecondMessage() {
+	public void AbsenceSecondMessage() {
 
 		//初期化
 		List<Map<String, Object>> resultList;
@@ -127,7 +127,7 @@ public class attend {
 
 	///3限のアラーム////
 	@Scheduled(cron = "0 30 14 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
-	public void AbsenceMessage() {
+	public void AbsenceThirdMessage() {
 
 		//初期化
 		List<Map<String, Object>> resultList;
@@ -145,7 +145,7 @@ public class attend {
 
 	///4限のアラーム////
 	@Scheduled(cron = "0 15 16 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
-	public void absencefourthMessage() {
+	public void AbsenceFourthMessage() {
 
 		//初期化
 		List<Map<String, Object>> resultList;
@@ -163,17 +163,17 @@ public class attend {
 
 	//////////授業がない時間の対応//////////
 	@Scheduled(cron = "0 0 8 * * MON-FRI")
-	public void noclass1() {
+	public void NoClass() {
 		LocalDate currentDate = LocalDate.now();
 		DayOfWeek dayOfWeek = currentDate.getDayOfWeek();
 
 		// 曜日名を取得（小文字）
 		String dayOfWeekString = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH).toLowerCase();
 		System.out.println(dayOfWeekString);
-		noclass(dayOfWeekString);
+		NoClassSet(dayOfWeekString);
 	}
 
-	public void noclass(String dayofweek) {
+	public void NoClassSet(String dayofweek) {
 		List<Map<String, Object>> resultList;
 		resultList = jdbcTemplate.queryForList("SELECT * FROM classroom");
 		String save = "";
@@ -223,7 +223,7 @@ public class attend {
 
 	//データ保存
 	@Scheduled(cron = "0 0 18 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
-	public void sevedata() {
+	public void SeveData() {
 		List<Map<String, Object>> resultList = jdbcTemplate.queryForList("select * FROM user");
 
 		for (Map<String, Object> result : resultList) {
@@ -252,20 +252,15 @@ public class attend {
 	}
 
 	@Scheduled(cron = "0 00 18 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
-	public void dele() {
-		jdbcTemplate.update("UPDATE user SET class1 = 0, class2 = 0, class3 = 0,class4 = 0,class1time = null, class2time =null, class3time = null,class4time = null;");
+	public void DeleAttend() {
+		jdbcTemplate.update("UPDATE user SET class1 = 0, class2 = 0, class3 = 0,class4 = 0,class1time = null, class2time =null, class3time = null,class4time = null,Exittime = null,Entertime = null;");
 		System.out.println("今日の出席情報を初期化しました");
 	}
 
-	@Scheduled(cron = "00 00 18 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
-	public void dele2() {
-		jdbcTemplate.update("UPDATE user SET Exittime = null,Entertime = null WHERE Exittime IS NOT NULL");
-		System.out.println("今日の退出時間を初期化しました");
-	}
 
 	//毎朝8時
 	@Scheduled(cron = "0 0 8 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
-	public void pchenkyaku() {
+	public void DelePc() {
 		jdbcTemplate.update("UPDATE user SET user_pc = null WHERE user_pc IS NOT NULL");
 	}
 }
