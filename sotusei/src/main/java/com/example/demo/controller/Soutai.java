@@ -18,46 +18,45 @@ public class Soutai {
 	JdbcTemplate jdbcTemplate;
 
 	@RequestMapping(path = "/soutai", method = RequestMethod.GET)
-	public String getDisplay_Soutai(@RequestParam(name = "search", required = false) String searchValue, @RequestParam(name = "kinds", required = false) String searchKinds,
+	public String getDisplay_Soutai(@RequestParam(name = "search", required = false) String searchValue,
+			@RequestParam(name = "kinds", required = false) String searchKinds,
 			Model model) {
 		// SELECT文の結果をしまうためのリスト
 		// SELECT文の結果をしまうためのリスト
-				List<Map<String, Object>> resultList = null;
+		List<Map<String, Object>> resultList = null;
 
-				// 検索条件が指定されている場合は、名前を含むデータを検索
-				if (searchValue != null && !searchValue.isEmpty()) {
-					if ("name".equals(searchKinds)) {
-						resultList = jdbcTemplate.queryForList("select * from soutai where student_name like ?",
-								"%" + searchValue + "%");
-					} else if ("grade".equals(searchKinds)) {
-						resultList = jdbcTemplate.queryForList("select * from soutai where user_grade like ?",
-								"%" + searchValue + "%");
-					} else if ("classroom".equals(searchKinds)) {
-						resultList = jdbcTemplate.queryForList("select * from soutai where user_classroom like ?",
-								"%" + searchValue + "%");
-					}
-				} else {
-					resultList = jdbcTemplate.queryForList("select * from soutai");
-				}
+		// 検索条件が指定されている場合は、名前を含むデータを検索
+		if (searchValue != null && !searchValue.isEmpty()) {
+			if ("name".equals(searchKinds)) {
+				resultList = jdbcTemplate.queryForList("select * from soutai where student_name like ?",
+						"%" + searchValue + "%");
+			} else if ("grade".equals(searchKinds)) {
+				resultList = jdbcTemplate.queryForList("select * from soutai where user_grade like ?",
+						"%" + searchValue + "%");
+			} else if ("classroom".equals(searchKinds)) {
+				resultList = jdbcTemplate.queryForList("select * from soutai where user_classroom like ?",
+						"%" + searchValue + "%");
+			}
+		} else {
+			resultList = jdbcTemplate.queryForList("select * from soutai");
+		}
 
 		// リストの要素ごとに処理
 		// リストの要素ごとに処理
 		if (resultList != null) {
-		    for (Map<String, Object> result : resultList) {
-		        Object judgeValue = result.get("judge");
+			for (Map<String, Object> result : resultList) {
+				Object judgeValue = result.get("judge");
 
-		        if (judgeValue instanceof Number) {
-		            int status = ((Number) judgeValue).intValue();
-		            String statusString = getStatusString(status);
-		            result.put("judge", statusString);
-		        } else {
-		            // "judge"がNumber型でない場合の処理（デフォルト値を設定するなど）
-		            result.put("judge", "未入力");
-		        }
-		    }
+				if (judgeValue instanceof Number) {
+					int status = ((Number) judgeValue).intValue();
+					String statusString = getStatusString(status);
+					result.put("judge", statusString);
+				} else {
+					// "judge"がNumber型でない場合の処理（デフォルト値を設定するなど）
+					result.put("judge", "未入力");
+				}
+			}
 		}
-
-
 
 		// 実行結果をmodelにしまってHTMLで出せるようにする。
 		model.addAttribute("selectResult", resultList);
@@ -65,7 +64,6 @@ public class Soutai {
 		return null;
 
 	}
-
 
 	private String getStatusString(int status) {
 		switch (status) {

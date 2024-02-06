@@ -213,6 +213,8 @@ public class LineBotTeachers {
 				jdbcTemplate.update(
 						"UPDATE soutai SET judge = 1 where id=?;", judgeid);
 
+				userStateService.removeUserState(userId);
+				
 				int timeint = Integer.parseInt(time);
 
 				if (timeint <= 1015) {//一限と二限と三限と四限
@@ -257,6 +259,8 @@ public class LineBotTeachers {
 
 				jdbcTemplate.update(
 						"UPDATE soutai SET judge = 2 where id=?;", judgeid);
+				
+				userStateService.removeUserState(userId);
 			} else if ("soutai_sinsa".equals(userStateService.getUserState(userId))) {
 				String replyMessageText = "正しくない文字が送信されました。\nメニューから選択してください";
 				replyMessage(replyToken, replyMessageText);

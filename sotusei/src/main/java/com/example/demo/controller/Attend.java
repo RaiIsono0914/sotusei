@@ -34,6 +34,7 @@ public class Attend {
 			jdbcTemplate.update("UPDATE user SET class1 = ?;", 4);//出席状況を遅刻にする
 			System.out.println("一限目の出席情報を遅刻予定にしました");
 		}
+		System.out.println("正常終了");
 	}
 
 	///2限のアラーム////
@@ -51,6 +52,7 @@ public class Attend {
 			jdbcTemplate.update("UPDATE user SET class2 = ?;", 4);//出席状況を遅刻にする
 			System.out.println("二限目の出席情報を遅刻予定にしました");
 		}
+		System.out.println("正常終了");
 	}
 
 	///3限のアラーム////
@@ -68,6 +70,7 @@ public class Attend {
 			jdbcTemplate.update("UPDATE user SET class3 = ?;", 4);
 			System.out.println("三限目の出席情報を遅刻予定にしました");
 		}
+		System.out.println("正常終了");
 	}
 
 	///4限のアラーム////
@@ -85,6 +88,7 @@ public class Attend {
 			jdbcTemplate.update("UPDATE user SET class4 = ?;", 4);
 			System.out.println("四限目の出席情報を遅刻予定にしました");
 		}
+		System.out.println("正常終了");
 	}
 
 	///欠席ゾーン
@@ -105,6 +109,7 @@ public class Attend {
 			jdbcTemplate.update("UPDATE user SET class1 = ?;", 3);//出席状況を遅刻にする
 			System.out.println("一限目の出席情報を欠席にしました");
 		}
+		System.out.println("正常終了");
 	}
 
 	///2限のアラーム////
@@ -123,6 +128,7 @@ public class Attend {
 			jdbcTemplate.update("UPDATE user SET class2 = ?;", 3);//出席状況を遅刻にする
 			System.out.println("二限目の出席情報を欠席にしました");
 		}
+		System.out.println("正常終了");
 	}
 
 	///3限のアラーム////
@@ -141,6 +147,7 @@ public class Attend {
 			jdbcTemplate.update("UPDATE user SET class3 = ?;", 3);
 			System.out.println("三限目の出席情報を欠席にしました");
 		}
+		System.out.println("正常終了");
 	}
 
 	///4限のアラーム////
@@ -159,6 +166,7 @@ public class Attend {
 			jdbcTemplate.update("UPDATE user SET class4 = ?;", 3);
 			System.out.println("四限目の出席情報を欠席にしました");
 		}
+		System.out.println("正常終了");
 	}
 
 	//////////授業がない時間の対応//////////
@@ -171,6 +179,7 @@ public class Attend {
 		String dayOfWeekString = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH).toLowerCase();
 		System.out.println(dayOfWeekString);
 		NoClassSet(dayOfWeekString);
+		System.out.println("正常終了");
 	}
 
 	public void NoClassSet(String dayofweek) {
@@ -208,15 +217,16 @@ public class Attend {
 				save = save.substring(0, save.length() - 1);
 			}
 
-		    // 抽出されたデータを利用した処理を実行
-		    if (!save.isEmpty()) { // saveが空でない場合のみSQLを生成
-		        String sql = "UPDATE user SET " + save + " WHERE user_classroom = ? AND user_grade=?";
-		        System.out.println("Generated SQL: " + sql);
-		        // ここで生成したSQLを実行する処理を追加する
-				jdbcTemplate.update("UPDATE user SET " + save + " WHERE user_classroom = ? AND user_grade=?", classroom,grade);
-		        // 次の繰り返しのためにsaveをリセット
-		        save = "";
-		    }
+			// 抽出されたデータを利用した処理を実行
+			if (!save.isEmpty()) { // saveが空でない場合のみSQLを生成
+				String sql = "UPDATE user SET " + save + " WHERE user_classroom = ? AND user_grade=?";
+				System.out.println("Generated SQL: " + sql);
+				// ここで生成したSQLを実行する処理を追加する
+				jdbcTemplate.update("UPDATE user SET " + save + " WHERE user_classroom = ? AND user_grade=?", classroom,
+						grade);
+				// 次の繰り返しのためにsaveをリセット
+				save = "";
+			}
 		}
 		System.out.println("自動的に空き授業を出席情報に記録しました。");
 	}
@@ -241,26 +251,32 @@ public class Attend {
 			String class3time = (String) result.get("class3time");
 			String class4time = (String) result.get("class4time");
 			String pc = (String) result.get("user_pc");
-			String Exittime  = (String) result.get("Exittime");
-			String Entertime   = (String) result.get("Entertime");
+			String Exittime = (String) result.get("Exittime");
+			String Entertime = (String) result.get("Entertime");
 			// attendlogテーブルにデータを挿入
 			String insertSql = "INSERT INTO attendlog (user_name,user_classroom,user_grade,class1, class2, class3, class4,class1time,class2time,class3time,class4time,user_pc,Exittime,Entertime) VALUES (?,?,?,?,?,?, ?,?,?,?,?,?,?,?)";
-			jdbcTemplate.update(insertSql, user_name,user_classroom,user_grade, class1, class2, class3, class4, class1time, class2time,
-					class3time, class4time, pc,Exittime,Entertime);
-			System.out.println("今日の出席情報をDBに保存しました");
+			jdbcTemplate.update(insertSql, user_name, user_classroom, user_grade, class1, class2, class3, class4,
+					class1time, class2time,
+					class3time, class4time, pc, Exittime, Entertime);
+
 		}
+		System.out.println("今日の出席情報をDBに保存しました");
+		System.out.println("正常終了");
 	}
 
 	@Scheduled(cron = "0 00 18 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void DeleAttend() {
-		jdbcTemplate.update("UPDATE user SET class1 = 0, class2 = 0, class3 = 0,class4 = 0,class1time = null, class2time =null, class3time = null,class4time = null,Exittime = null,Entertime = null;");
+		jdbcTemplate.update(
+				"UPDATE user SET class1 = 0, class2 = 0, class3 = 0,class4 = 0,class1time = null, class2time =null, class3time = null,class4time = null,Exittime = null,Entertime = null;");
 		System.out.println("今日の出席情報を初期化しました");
+		System.out.println("正常終了");
 	}
-
 
 	//毎朝8時
 	@Scheduled(cron = "0 0 8 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void DelePc() {
 		jdbcTemplate.update("UPDATE user SET user_pc = null WHERE user_pc IS NOT NULL");
+		System.out.println("正常終了");
+
 	}
 }

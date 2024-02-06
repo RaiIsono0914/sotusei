@@ -120,8 +120,8 @@ public class LineBotStudents {
 
 					//登録情報入力DB
 					jdbcTemplate.update(
-							"INSERT INTO user ( user_id ,user_number ,user_name ,user_grade,user_classroom,class1 ,class2 ,class3 ) VALUES (?,?,?,?,?,?,?,?);",
-							userId, number, name, grade, classroom, 0, 0, 0);
+							"INSERT INTO user ( user_id ,user_number ,user_name ,user_grade,user_classroom,class1 ,class2 ,class3,class4 ) VALUES (?,?,?,?,?,?,?,?,?);",
+							userId, number, name, grade, classroom, 0, 0, 0,0);
 					System.out.println("登録完了");
 				} else {
 					String replyMessageText = "クラスが正しくありません\n最初からやり直してください";
