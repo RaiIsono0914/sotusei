@@ -2,9 +2,9 @@
 <html>
 
 <head>
-<meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
-<title>パスワード表示</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
+	<title>出席情報</title>
 
 </head>
 
@@ -17,7 +17,7 @@
 
 	<nav>
 		<ul>
-			<li><a th:href="@{/homee}">ホーム</a></li>
+			<li><a th:href="@{/home}">ホーム</a></li>
 			<li><a th:href="@{/passwordlist}">本日のパスワード</a></li>
 			<li><a th:href="@{/attend_list}">本日の出席情報</a></li>
 			<li><a th:href="@{/studentlist}">学生情報</a></li>
@@ -31,16 +31,12 @@
 		<!-- 検索フォーム -->
 		<form th:action="@{/attend_list}" method="get">
 
-			<select id="searchKinds" name="kinds">
-				<option value="grade">学年</option>
-				<option value="classroom">クラス</option>
-				<option value="name">名前</option>
-			</select> <input type="text" id="searchValue" name="search"
-				th:value="${searchValue}" /> <input type="submit" value="Search">
+			<input type="text" id="searchValue" name="search" th:value="${searchValue}" /> <input type="submit"
+				value="Search">
 		</form>
 
 		<!-- 検索結果表示 -->
-		<table >
+		<table>
 			<thead>
 				<tr>
 					<th>名前</th>
@@ -77,7 +73,9 @@
 					<td th:text="${result['class4time']}"></td>
 					<td th:text="${result['Exittime']}"></td>
 					<td th:text="${result['Entertime']}"></td>
-					<td  class ="linkbuttontd"><a class="linkbutton" th:href="@{/attendedit(user_id=${result['user_id']}, user_name=${result['user_name']}, user_grade=${result['user_grade']}, user_classroom=${result['user_classroom']}, user_pc=${result?.user_pc}, class1=${result['class1']}, class1time=${result['class1time']}, class2=${result['class2']}, class2time=${result['class2time']}, class3=${result['class3']}, class3time=${result['class3time']}, class4=${result['class4']}, class4time=${result['class4time']}, Exittime=${result['Exittime']}, Entertime=${result['Entertime']})}">編集</a></td>
+					<td class="linkbuttontd"><a class="linkbutton"
+							th:href="@{/attendedit(user_id=${result['user_id']}, user_name=${result['user_name']}, user_grade=${result['user_grade']}, user_classroom=${result['user_classroom']}, user_pc=${result?.user_pc}, class1=${result['class1']}, class1time=${result['class1time']}, class2=${result['class2']}, class2time=${result['class2time']}, class3=${result['class3']}, class3time=${result['class3time']}, class4=${result['class4']}, class4time=${result['class4time']}, Exittime=${result['Exittime']}, Entertime=${result['Entertime']})}">編集</a>
+					</td>
 
 
 
@@ -90,7 +88,7 @@
 
 	</main>
 	<footer>
-		<p>&copy; News Site. All Rights Reserved.</p>
+		<p>&copy; KRC.</p>
 	</footer>
 
 </body>

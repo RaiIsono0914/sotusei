@@ -21,153 +21,195 @@ public class Attend {
 	@Scheduled(cron = "0 35 9 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void FirstMessage() {
 
-		//初期化
-		List<Map<String, Object>> resultList;
-		Object attendObject = null;
-		String attend = null;
-		//DBから出席情報を取得
-		resultList = jdbcTemplate.queryForList("select class1 FROM user");//attendテーブルのclass1（一限の出席情報）取得
-		Map<String, Object> firstRow = resultList.get(0);//以下３行は取得したリストを文字列にする
-		attendObject = firstRow.get("class1");
-		attend = attendObject.toString();
-		if (attend.equals("0")) {//出席状況が未入力なら
-			jdbcTemplate.update("UPDATE user SET class1 = ?;", 4);//出席状況を遅刻にする
-			System.out.println("一限目の出席情報を遅刻予定にしました");
-		}
-		System.out.println("正常終了");
-	}
+	    // 初期化
+	    List<Map<String, Object>> resultList;
+	    Object attendObject = null;
+	    String attend = null;
+	    // DBから出席情報を取得
+	    resultList = jdbcTemplate.queryForList("select class1 FROM user");//attendテーブルのclass1（一限の出席情報）取得
 
+	    // 一件ずつデータを処理する
+	    for (Map<String, Object> row : resultList) {
+	        // 取得したデータのattendをチェックする
+	        attendObject = row.get("class1");
+	        attend = attendObject.toString();
+	        if (attend.equals("0")) {//出席状況が未入力なら
+	            jdbcTemplate.update("UPDATE user SET class1 = ?;", 4);//出席状況を遅刻にする
+	            System.out.println("一限目の出席情報を遅刻予定にしました");
+	        }
+	    }
+
+	    System.out.println("正常終了");
+	}
+	
 	///2限のアラーム////
 	@Scheduled(cron = "0 20 11 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void SecondMessage() {
-		//初期化
-		List<Map<String, Object>> resultList;
-		Object attendObject = null;
-		String attend = null;
-		resultList = jdbcTemplate.queryForList("select class2 FROM user");//attendテーブルのclass1（一限の出席情報）取得
-		Map<String, Object> firstRow = resultList.get(0);//以下３行は取得したリストを文字列にする
-		attendObject = firstRow.get("class2");
-		attend = attendObject.toString();
-		if (attend.equals("0")) {
-			jdbcTemplate.update("UPDATE user SET class2 = ?;", 4);//出席状況を遅刻にする
-			System.out.println("二限目の出席情報を遅刻予定にしました");
-		}
-		System.out.println("正常終了");
+
+	    // 初期化
+	    List<Map<String, Object>> resultList;
+	    Object attendObject = null;
+	    String attend = null;
+	    // DBから出席情報を取得
+	    resultList = jdbcTemplate.queryForList("select class2 FROM user");
+
+	    // 一件ずつデータを処理する
+	    for (Map<String, Object> row : resultList) {
+	        // 取得したデータのattendをチェックする
+	        attendObject = row.get("class2");
+	        attend = attendObject.toString();
+	        if (attend.equals("0")) {//出席状況が未入力なら
+	            jdbcTemplate.update("UPDATE user SET class2 = ?;", 4);//出席状況を遅刻にする
+	            System.out.println("二限目の出席情報を遅刻予定にしました");
+	        }
+	    }
+
+	    System.out.println("正常終了");
 	}
+	
 
 	///3限のアラーム////
 	@Scheduled(cron = "0 50 13 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void ThirdMessage() {
-		//初期化
-		List<Map<String, Object>> resultList;
-		Object attendObject = null;
-		String attend = null;
-		resultList = jdbcTemplate.queryForList("select class3 FROM user");
-		Map<String, Object> firstRow = resultList.get(0);
-		attendObject = firstRow.get("class3");
-		attend = attendObject.toString();
-		if (attend.equals("0")) {
-			jdbcTemplate.update("UPDATE user SET class3 = ?;", 4);
-			System.out.println("三限目の出席情報を遅刻予定にしました");
-		}
-		System.out.println("正常終了");
-	}
 
+	    // 初期化
+	    List<Map<String, Object>> resultList;
+	    Object attendObject = null;
+	    String attend = null;
+	    // DBから出席情報を取得
+	    resultList = jdbcTemplate.queryForList("select class3 FROM user");//attendテーブルのclass1（一限の出席情報）取得
+
+	    // 一件ずつデータを処理する
+	    for (Map<String, Object> row : resultList) {
+	        // 取得したデータのattendをチェックする
+	        attendObject = row.get("class3");
+	        attend = attendObject.toString();
+	        if (attend.equals("0")) {//出席状況が未入力なら
+	            jdbcTemplate.update("UPDATE user SET class3 = ?;", 4);//出席状況を遅刻にする
+	            System.out.println("三限目の出席情報を遅刻予定にしました");
+	        }
+	    }
+
+	    System.out.println("正常終了");
+	}
+	
 	///4限のアラーム////
 	@Scheduled(cron = "0 35 15 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void FourthMessage() {
-		//初期化
-		List<Map<String, Object>> resultList;
-		Object attendObject = null;
-		String attend = null;
-		resultList = jdbcTemplate.queryForList("select class4 FROM user");
-		Map<String, Object> firstRow = resultList.get(0);
-		attendObject = firstRow.get("class4");
-		attend = attendObject.toString();
-		if (attend.equals("0")) {
-			jdbcTemplate.update("UPDATE user SET class4 = ?;", 4);
-			System.out.println("四限目の出席情報を遅刻予定にしました");
-		}
-		System.out.println("正常終了");
+	    // 初期化
+	    List<Map<String, Object>> resultList;
+	    Object attendObject = null;
+	    String attend = null;
+	    // DBから出席情報を取得
+	    resultList = jdbcTemplate.queryForList("select class4 FROM user");//attendテーブルのclass1（一限の出席情報）取得
+
+	    // 一件ずつデータを処理する
+	    for (Map<String, Object> row : resultList) {
+	        // 取得したデータのattendをチェックする
+	        attendObject = row.get("class4");
+	        attend = attendObject.toString();
+	        if (attend.equals("0")) {//出席状況が未入力なら
+	            jdbcTemplate.update("UPDATE user SET class4 = ?;", 4);//出席状況を遅刻にする
+	            System.out.println("四限目の出席情報を遅刻予定にしました");
+	        }
+	    }
+
+	    System.out.println("正常終了");
 	}
+	
+	
+
 
 	///欠席ゾーン
 
 	//	///1限のアラーム////
 	@Scheduled(cron = "0 15 10 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void AbsenceFirstMessage() {
-		//初期化
-		List<Map<String, Object>> resultList;
-		Object attendObject = null;
-		String attend = null;
-		//DBから出席情報を取得
-		resultList = jdbcTemplate.queryForList("select class1 FROM user");//attendテーブルのclass1（一限の出席情報）取得
-		Map<String, Object> firstRow = resultList.get(0);//以下３行は取得したリストを文字列にする
-		attendObject = firstRow.get("class1");
-		attend = attendObject.toString();
-		if (attend.equals("4")) {//出席状況が未入力なら
-			jdbcTemplate.update("UPDATE user SET class1 = ?;", 3);//出席状況を遅刻にする
-			System.out.println("一限目の出席情報を欠席にしました");
-		}
-		System.out.println("正常終了");
+	    //初期化
+	    List<Map<String, Object>> resultList;
+	    Object attendObject = null;
+	    String attend = null;
+	    //DBから出席情報を取得
+	    resultList = jdbcTemplate.queryForList("select class1 FROM user");
+	    
+	    for (Map<String, Object> row : resultList) {
+	        // 取得したデータのattendをチェックする
+	        attendObject = row.get("class1");
+	        attend = attendObject.toString();
+	        if (attend.equals("4")) {//出席状況が未入力なら
+	            jdbcTemplate.update("UPDATE user SET class1 = ?;", 3);//出席状況を欠席にする
+	            System.out.println("一限目の出席情報を欠席にしました");
+	        }
+	    }
+	    System.out.println("正常終了");
 	}
 
 	///2限のアラーム////
 	@Scheduled(cron = "0 0 12 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void AbsenceSecondMessage() {
-
-		//初期化
-		List<Map<String, Object>> resultList;
-		Object attendObject = null;
-		String attend = null;
-		resultList = jdbcTemplate.queryForList("select class2 FROM user");//attendテーブルのclass1（一限の出席情報）取得
-		Map<String, Object> firstRow = resultList.get(0);//以下３行は取得したリストを文字列にする
-		attendObject = firstRow.get("class2");
-		attend = attendObject.toString();
-		if (attend.equals("4")) {
-			jdbcTemplate.update("UPDATE user SET class2 = ?;", 3);//出席状況を遅刻にする
-			System.out.println("二限目の出席情報を欠席にしました");
-		}
-		System.out.println("正常終了");
+	    //初期化
+	    List<Map<String, Object>> resultList;
+	    Object attendObject = null;
+	    String attend = null;
+	    //DBから出席情報を取得
+	    resultList = jdbcTemplate.queryForList("select class2 FROM user");
+	    
+	    for (Map<String, Object> row : resultList) {
+	        // 取得したデータのattendをチェックする
+	        attendObject = row.get("class2");
+	        attend = attendObject.toString();
+	        if (attend.equals("4")) {//出席状況が未入力なら
+	            jdbcTemplate.update("UPDATE user SET class2 = ?;", 3);//出席状況を欠席にする
+	            System.out.println("二限目の出席情報を欠席にしました");
+	        }
+	    }
+	    System.out.println("正常終了");
 	}
 
 	///3限のアラーム////
 	@Scheduled(cron = "0 30 14 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void AbsenceThirdMessage() {
-
-		//初期化
-		List<Map<String, Object>> resultList;
-		Object attendObject = null;
-		String attend = null;
-		resultList = jdbcTemplate.queryForList("select class3 FROM user");
-		Map<String, Object> firstRow = resultList.get(0);
-		attendObject = firstRow.get("class3");
-		attend = attendObject.toString();
-		if (attend.equals("4")) {
-			jdbcTemplate.update("UPDATE user SET class3 = ?;", 3);
-			System.out.println("三限目の出席情報を欠席にしました");
-		}
-		System.out.println("正常終了");
+	    //初期化
+	    List<Map<String, Object>> resultList;
+	    Object attendObject = null;
+	    String attend = null;
+	    //DBから出席情報を取得
+	    resultList = jdbcTemplate.queryForList("select class3 FROM user");
+	    
+	    for (Map<String, Object> row : resultList) {
+	        // 取得したデータのattendをチェックする
+	        attendObject = row.get("class3");
+	        attend = attendObject.toString();
+	        if (attend.equals("4")) {//出席状況が未入力なら
+	            jdbcTemplate.update("UPDATE user SET class3 = ?;", 3);//出席状況を欠席にする
+	            System.out.println("三限目の出席情報を欠席にしました");
+	        }
+	    }
+	    System.out.println("正常終了");
 	}
 
 	///4限のアラーム////
 	@Scheduled(cron = "0 15 16 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
 	public void AbsenceFourthMessage() {
-
-		//初期化
-		List<Map<String, Object>> resultList;
-		Object attendObject = null;
-		String attend = null;
-		resultList = jdbcTemplate.queryForList("select class4 FROM user");
-		Map<String, Object> firstRow = resultList.get(0);
-		attendObject = firstRow.get("class4");
-		attend = attendObject.toString();
-		if (attend.equals("4")) {
-			jdbcTemplate.update("UPDATE user SET class4 = ?;", 3);
-			System.out.println("四限目の出席情報を欠席にしました");
-		}
-		System.out.println("正常終了");
+	    //初期化
+	    List<Map<String, Object>> resultList;
+	    Object attendObject = null;
+	    String attend = null;
+	    //DBから出席情報を取得
+	    resultList = jdbcTemplate.queryForList("select class4 FROM user");
+	    
+	    for (Map<String, Object> row : resultList) {
+	        // 取得したデータのattendをチェックする
+	        attendObject = row.get("class4");
+	        attend = attendObject.toString();
+	        if (attend.equals("4")) {//出席状況が未入力なら
+	            jdbcTemplate.update("UPDATE user SET class4 = ?;", 3);//出席状況を欠席にする
+	            System.out.println("四限目の出席情報を欠席にしました");
+	        }
+	    }
+	    System.out.println("正常終了");
 	}
+
 
 	//////////授業がない時間の対応//////////
 	@Scheduled(cron = "0 0 8 * * MON-FRI")
@@ -264,7 +306,7 @@ public class Attend {
 		System.out.println("正常終了");
 	}
 
-	@Scheduled(cron = "0 00 18 * * MON-FRI") //(cron = "秒　分　時　日　月　曜日"）
+	@Scheduled(cron = "0 10 18 * * MON-FRI") //(cron = "秒　分　時　日 月　曜日"）
 	public void DeleAttend() {
 		jdbcTemplate.update(
 				"UPDATE user SET class1 = 0, class2 = 0, class3 = 0,class4 = 0,class1time = null, class2time =null, class3time = null,class4time = null,Exittime = null,Entertime = null;");

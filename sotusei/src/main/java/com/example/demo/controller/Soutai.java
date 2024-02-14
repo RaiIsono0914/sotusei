@@ -61,10 +61,20 @@ public class Soutai {
 		// 実行結果をmodelにしまってHTMLで出せるようにする。
 		model.addAttribute("selectResult", resultList);
 
-		return null;
+		return "soutai";
 
 	}
-
+	
+	@RequestMapping(path = "/soutaidele", method = RequestMethod.GET)
+	public String getDelete_Soutai(@RequestParam(name = "student_name", required = true) String studentName,
+			@RequestParam(name = "day", required = true) String day) {
+		
+		jdbcTemplate.update("delete from soutai where student_name = ? and day = ?", studentName, day);
+		
+		return "redirect:/soutai";
+		
+	}
+	
 	private String getStatusString(int status) {
 		switch (status) {
 		case 0:

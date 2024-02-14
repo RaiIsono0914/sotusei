@@ -297,14 +297,16 @@ public class LineBotTeachers {
 				userName = userName + (String) resultMap.get("user_name") + "さん、";
 				System.out.println(userName);
 			}
-
 			if (userName != "") {
 				pushMessage(teacher, userName + "が遅刻しています。");
 			} else {
 				pushMessage(teacher, "遅刻者はいません。");
 			}
+			
+			System.out.println("一限の遅刻者を教員に通知しました");
 		}
-		System.out.println("一限の遅刻者を教員に通知しました");
+		
+		
 	}
 
 	@Scheduled(cron = "0 21 11 * * MON-FRI")
@@ -331,8 +333,9 @@ public class LineBotTeachers {
 			} else {
 				pushMessage(teacher, "遅刻者はいません。");
 			}
+			System.out.println("二限の遅刻者を教員に通知しました");
 		}
-		System.out.println("二限の遅刻者を教員に通知しました");
+		
 	}
 
 	@Scheduled(cron = "0 51 13 * * MON-FRI")
@@ -359,8 +362,9 @@ public class LineBotTeachers {
 			} else {
 				pushMessage(teacher, "遅刻者はいません。");
 			}
+			System.out.println("三限の遅刻者を教員に通知しました");
 		}
-		System.out.println("三限の遅刻者を教員に通知しました");
+		
 	}
 
 	@Scheduled(cron = "0 36 15 * * MON-FRI")
@@ -387,8 +391,9 @@ public class LineBotTeachers {
 			} else {
 				pushMessage(teacher, "遅刻者はいません。");
 			}
+			System.out.println("四限の遅刻者を教員に通知しました");
 		}
-		System.out.println("四限の遅刻者を教員に通知しました");
+		
 	}
 
 	public static boolean isUppercaseLetter(String input) {

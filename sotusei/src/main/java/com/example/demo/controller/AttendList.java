@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,31 +17,60 @@ public class AttendList {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+	
+	private static final Map<String, Integer> statusMappings = Map.of(
+            "未入力", 0,
+            "出席", 1,
+            "遅刻", 2,
+            "欠席", 3,
+            "遅刻自動", 4,
+            "早退", 5,
+            "公欠", 6,
+            "授業なし", 7
+    );
 
 	@RequestMapping(path = "/attend_list", method = RequestMethod.GET)
-	public String getDisplay_Attend_List(@RequestParam(name = "search", required = false) String searchValue, @RequestParam(name = "kinds", required = false) String searchKinds,
-			Model model) {
+	public String getDisplay_Attend_List(@RequestParam(name = "search", required = false) String searchValue,Model model) {
 
-		System.out.println(searchValue+searchKinds);
 
 		// SELECT文の結果をしまうためのリスト
 		List<Map<String, Object>> resultList = null;
 
 		// 検索条件が指定されている場合は、名前を含むデータを検索
 		if (searchValue != null && !searchValue.isEmpty()) {
-			if ("name".equals(searchKinds)) {
-				resultList = jdbcTemplate.queryForList("select * from user where user_name like ?",
-						"%" + searchValue + "%");
-			} else if ("grade".equals(searchKinds)) {
-				resultList = jdbcTemplate.queryForList("select * from user where user_grade like ?",
-						"%" + searchValue + "%");
-			} else if ("classroom".equals(searchKinds)) {
-				resultList = jdbcTemplate.queryForList("select * from user where user_classroom like ?",
-						"%" + searchValue + "%");
-			}
-		} else {
-			resultList = jdbcTemplate.queryForList("select * from user");
-		}
+            // 全角スペースを半角スペースに変換
+            searchValue = searchValue.replaceAll("　", " ");
+            // スペースでキーワードを分割する
+            String[] keywords = searchValue.trim().split(" ");
+            // WHERE句を組み立てる
+            String whereClause = "";
+            List<Object> params = new ArrayList<>();
+            for (String keyword : keywords) {
+                if (!whereClause.isEmpty()) {
+                    whereClause += " AND ";
+                }
+                // 数値に対応するステータス文字列を検索キーワードとして受け取った場合、数値に変換する
+                Integer status = statusMappings.get(keyword);
+                if (status != null) {
+                    whereClause += "(class1 = ? OR class2 = ? OR class3 = ? OR class4 = ?)";
+                    params.add(status);
+                    params.add(status);
+                    params.add(status);
+                    params.add(status);
+                } else {
+                    whereClause += "(user_name LIKE ? OR user_grade LIKE ? OR user_classroom LIKE ?)";
+                    params.add("%" + keyword + "%");
+                    params.add("%" + keyword + "%");
+                    params.add("%" + keyword + "%");
+                }
+            }
+
+            // SQL文を実行（プレースホルダーを使用）
+            String sqlQuery = "SELECT * FROM user WHERE " + whereClause;
+            resultList = jdbcTemplate.queryForList(sqlQuery, params.toArray());
+        } else {
+            resultList = jdbcTemplate.queryForList("SELECT * FROM user");
+        }
 
 		// リストの要素ごとに処理
 		if (resultList != null) {

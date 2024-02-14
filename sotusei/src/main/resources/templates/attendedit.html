@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
-<title>ユーザー更新</title>
+<title>出席情報更新</title>
 
 <script>
     function validateInput(inputElement) {
@@ -30,7 +30,7 @@
 
 	<nav>
 		<ul>
-			<li><a th:href="@{/homee}">ホーム</a></li>
+			<li><a th:href="@{/home}">ホーム</a></li>
 			<li><a th:href="@{/passwordlist}">本日のパスワード</a></li>
 			<li><a th:href="@{/attend_list}">本日の出席情報</a></li>
 			<li><a th:href="@{/studentlist}">学生情報</a></li>
@@ -55,6 +55,7 @@
                     <option value="5">早退</option>
                     <option value="6">公欠</option>
                     <option value="7">授業なし</option>
+                    <option value="0">未入力</option>
                 </select>
                 時間：<input type="text" name="class1time" th:value="${class1time}" onChange="validateInput(this)"/><br>
 
@@ -65,6 +66,7 @@
                     <option value="5">早退</option>
                     <option value="6">公欠</option>
                     <option value="7">授業なし</option>
+                    <option value="0">未入力</option>
                 </select>
                 時間：<input type="text" name="class2time" th:value="${class2time}" onChange="validateInput(this)"/><br>
 
@@ -75,6 +77,7 @@
                     <option value="5">早退</option>
                     <option value="6">公欠</option>
                     <option value="7">授業なし</option>
+                    <option value="0">未入力</option>
                 </select>
                 時間：<input type="text" name="class3time" th:value="${class3time}" onChange="validateInput(this)"/><br>
 
@@ -85,6 +88,7 @@
                     <option value="5">早退</option>
                     <option value="6">公欠</option>
                     <option value="7">授業なし</option>
+                    <option value="0">未入力</option>
                 </select>
                 時間：<input type="text" name="class4time" th:value="${class4time}" onChange="validateInput(this)"/><br>
                 PC番号：<input type="text" name="user_pc" th:value="${user_pc}" /><br>
@@ -97,5 +101,8 @@
 			</p>
 		</form>
 	</main>
+		<footer>
+		<p>&copy; KRC.</p>
+	</footer>
 </body>
 </html>

@@ -3,7 +3,7 @@
 
 <head>
 <meta charset="UTF-8">
-<title>ユーザー登録</title>
+<title>生徒情報</title>
 <link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
 <script>
         function sortTable(n) {
@@ -83,7 +83,7 @@
 
 	<nav>
 		<ul>
-			<li><a th:href="@{/homee}">ホーム</a></li>
+			<li><a th:href="@{/home}">ホーム</a></li>
 			<li><a th:href="@{/passwordlist}">本日のパスワード</a></li>
 			<li><a th:href="@{/attend_list}">本日の出席情報</a></li>
 			<li><a th:href="@{/studentlist}">学生情報</a></li>
@@ -98,11 +98,6 @@
 
 		<form th:action="@{/studentlist}" method="get">
 
-			<select id="searchKinds" name="kinds">
-				<option value="grade">学年</option>
-				<option value="classroom">クラス</option>
-				<option value="name">名前</option>
-			</select>
 
 			 <input type="text" id="searchValue" name="search"
 				th:value="${searchValue}" /> <input type="submit" value="Search">
@@ -117,6 +112,7 @@
 					<th onclick="sortTable(3)">学年</th>
 					<th onclick="sortTable(4)">クラス</th>
 					<th>編集</th>
+					<th>削除</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -128,16 +124,15 @@
 					<td th:text="${result?.user_grade}">User grade</td>
 					<td th:text="${result?.user_classroom}">User classroom</td>
 					<td  class ="linkbuttontd"><a class="linkbutton" th:href="@{/studentedit(user_id=${result['user_id']},user_name=${result['user_name']},user_number=${result['user_number']},user_grade=${result['user_grade']},user_classroom=${result['user_classroom']})}">編集</a></td>
-
+					<td  class ="linkbuttontd"><a class="linkbutton" th:href="@{/studentdele(user_id=${result['user_id']})}">削除</a></td>
 				</tr>
 			</tbody>
 		</table>
 	</main>
 
 	<footer>
-		<p>&copy; News Site. All Rights Reserved.</p>
+		<p>&copy; KRC.</p>
 	</footer>
-
 </body>
 
 </html>

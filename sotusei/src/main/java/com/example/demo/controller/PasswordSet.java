@@ -33,7 +33,7 @@ public class PasswordSet {
 	}
 
 	public String GenerateRandomPassword(int length) {
-		String digits = "0123456789";
+		String digits = "123456789";
 		StringBuilder password = new StringBuilder();
 
 		Random random = new Random();

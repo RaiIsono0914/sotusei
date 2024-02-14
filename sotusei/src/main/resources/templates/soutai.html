@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" href="/css/sotusei.css" />
-<title>ユーザー更新</title>
+<title>早退申請確認</title>
 </head>
 
 <body>
@@ -16,7 +16,7 @@
 
 	<nav>
 		<ul>
-			<li><a th:href="@{/homee}">ホーム</a></li>
+			<li><a th:href="@{/home}">ホーム</a></li>
 			<li><a th:href="@{/passwordlist}">本日のパスワード</a></li>
 			<li><a th:href="@{/attend_list}">本日の出席情報</a></li>
 			<li><a th:href="@{/studentlist}">学生情報</a></li>
@@ -50,26 +50,27 @@
 					<th>時間</th>
 					<th>申請日時</th>
 					<th>認否</th>
+					<th>削除</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr th:if="${selectResult != null}"
 					th:each="result : ${selectResult}">
 					<td th:text="${result['student_name']}">Student Name</td>
-
 					<td th:text="${result?.user_grade}"></td>
 					<td th:text="${result?.user_classroom}"></td>
 					<td th:text="${result?.reason}"></td>
 					<td th:text="${result?.time}"></td>
 					<td th:text="${result?.day}"></td>
 					<td th:text="${result?.judge}"></td>
+					<td  class ="linkbuttontd"><a class="linkbutton" th:href="@{/soutaidele(student_name=${result['student_name']},day=${result['day']})}">削除</a></td>
 				</tr>
 			</tbody>
 		</table>
 	</main>
 
 	<footer>
-		<p>&copy; News Site. All Rights Reserved.</p>
+		<p>&copy; KRC.</p>
 	</footer>
 
 </body>

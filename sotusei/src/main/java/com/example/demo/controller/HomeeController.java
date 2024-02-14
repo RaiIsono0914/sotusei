@@ -19,7 +19,7 @@ public class HomeeController {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
-	@RequestMapping(path = "/homee", method = RequestMethod.GET)
+	@RequestMapping(path = "/home", method = RequestMethod.GET)
 	public String getDisplay_Home(Model model, HttpSession session) {
 
 		LocalTime currentTime = LocalTime.now();//時間を取得

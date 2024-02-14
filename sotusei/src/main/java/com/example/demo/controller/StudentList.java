@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,36 +15,45 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class StudentList {
 
-	//DBへつなぐために必要
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
 	@RequestMapping(path = "/studentlist", method = RequestMethod.GET)
-	public String getDisplay_StudentList(@RequestParam(name = "search", required = false) String searchValue, @RequestParam(name = "kinds", required = false) String searchKinds,
-			Model model) {
+	public String getDisplayStudentList(@RequestParam(name = "search", required = false) String searchValue, Model model) {
 
-		// SELECT文の結果をしまうためのリスト
-		List<Map<String, Object>> resultList = null;
-
-		// 検索条件が指定されている場合は、名前を含むデータを検索
+		List<Map<String, Object>> resultList = new ArrayList<>();
 		if (searchValue != null && !searchValue.isEmpty()) {
-			if ("name".equals(searchKinds)) {
-				resultList = jdbcTemplate.queryForList("select * from user where user_name like ?",
-						"%" + searchValue + "%");
-			} else if ("grade".equals(searchKinds)) {
-				resultList = jdbcTemplate.queryForList("select * from user where user_grade like ?",
-						"%" + searchValue + "%");
-			} else if ("classroom".equals(searchKinds)) {
-				resultList = jdbcTemplate.queryForList("select * from user where user_classroom like ?",
-						"%" + searchValue + "%");
-			}
-		} else {
-			resultList = jdbcTemplate.queryForList("select * from user");
-		}
-		//実行結果をmodelにしまってHTMLで出せるようにする。
+            // スペースでキーワードを分割する
+            String[] keywords = searchValue.trim().split("\\s+");
+            // WHERE句を組み立てる
+            String whereClause = "";
+            List<Object> params = new ArrayList<>();
+            for (String keyword : keywords) {
+                if (!whereClause.isEmpty()) {
+                    whereClause += " AND ";
+                }
+                whereClause += "(user_name LIKE ? OR user_classroom LIKE ? OR user_grade LIKE ?)";
+                params.add("%" + keyword + "%");
+                params.add("%" + keyword + "%");
+                params.add("%" + keyword + "%");
+
+            }
+
+            // SQL文を実行（プレースホルダーを使用）
+            String sqlQuery = "SELECT * FROM user WHERE " + whereClause;
+            resultList = jdbcTemplate.queryForList(sqlQuery, params.toArray());
+        } else {
+            resultList = jdbcTemplate.queryForList("SELECT * FROM user");
+        }
+
 		model.addAttribute("selectResult", resultList);
 
 		return "studentlist";
 	}
-
+	
+	@RequestMapping(path = "/studentdele", method = RequestMethod.GET)
+	public String getStudentDele(@RequestParam("user_id") String userId, Model model) {
+		jdbcTemplate.update("delete from user where user_id = ?", userId);
+		return "redirect:/studentlist";
+	}
 }

@@ -26,6 +26,9 @@ public class LineBotStudents {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+	
+	@Autowired
+    private Attend attend;
 
 	// ここにチャンネルアクセストークンを貼る！
 	String channelAccessToken = "n+6eDF3xXCF90HIC94zGdKaMr7pkID8kyFQpvDf1WdUmNiGNKevUwNRWZuaUy+2MKGAj/72y1S/gZSRLYLmeufnTIVLnNymgj+7fmTEJp2uVZzUErN1gWgs1OPInPZ7P/C4F1ppC1Im8QYrWCuIT6gdB04t89/1O/w1cDnyilFU=";
@@ -122,6 +125,9 @@ public class LineBotStudents {
 					jdbcTemplate.update(
 							"INSERT INTO user ( user_id ,user_number ,user_name ,user_grade,user_classroom,class1 ,class2 ,class3,class4 ) VALUES (?,?,?,?,?,?,?,?,?);",
 							userId, number, name, grade, classroom, 0, 0, 0,0);
+					
+					attend.NoClass();
+					
 					System.out.println("登録完了");
 				} else {
 					String replyMessageText = "クラスが正しくありません\n最初からやり直してください";
@@ -408,10 +414,18 @@ public class LineBotStudents {
 				replyMessage(replyToken, replyMessageText);
 				userStateService.setUserState(userId, "wait_time");
 			} else if ("wait_time".equals(userStateService.getUserState(userId))) {
-				String replyMessageText = "早退理由を転送します。入力してください";
-				replyMessage(replyToken, replyMessageText);
-				userStateService.setUserState(userId, "wait_reason");
-				userStateService.setUserSoutaiTime(userId, replyText);
+				
+				//入力された時間が半角数字４桁じゃない場合エラー
+				if	((replyText.length() != 4)&&(!replyText.matches("^[0-9]*$"))){
+                    String replyMessageText = "時間が正しくありません\n最初からやり直してください";
+                    replyMessage(replyToken, replyMessageText);
+                    userStateService.removeUserState(userId);
+                } else {
+                    String replyMessageText = "早退理由を転送します。入力してください";
+                    replyMessage(replyToken, replyMessageText);
+                    userStateService.setUserState(userId, "wait_reason");
+                    userStateService.setUserSoutaiTime(userId, replyText);
+                }
 			} else if ("wait_reason".equals(userStateService.getUserState(userId))) {
 
 				List<Map<String, Object>> resultList;
